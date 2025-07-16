@@ -52,7 +52,7 @@
 ## 🚀 Quick Access
 
 ### Essential Links
-🔗 [Latest APK Download](https://fless.netlify.app/download.php)  
+🔗 [Latest APK Download](https://fless.netlify.app/download)  
 🔧 [FGD Portal](https://fless.netlify.app)  
 🗃️ [Database Dashboard](https://fless.ps.fhgdps.com)  
 ⭐ [GDPSHub Profile](https://gdpshub.com/gdps/2924)
@@ -92,7 +92,7 @@
 [![SociaBuzz](https://img.shields.io/badge/Back-SociaBuzz-FF69B4)](https://sociabuzz.com/ameliapt)
 
 **Creative Support:**  
-🎨 [Newgrounds Portfolio](https://rotenfles777.newgrounds.com/)
+🎨 [My (a like) Portfolio](https://flessan.pages.dev/)
 
 ---
 
