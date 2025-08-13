@@ -52,7 +52,7 @@
 ## 🚀 Quick Access
 
 ### Essential Links
-🔗 [Latest APK Download](https://fless.netlify.app/download)  
+🔗 [Latest Download](https://fless.netlify.app/download)  
 🔧 [FGD Portal](https://fless.netlify.app)  
 🗃️ [Database Dashboard](https://fless.ps.fhgdps.com)  
 ⭐ [GDPSHub Profile](https://gdpshub.com/gdps/2924)
@@ -62,9 +62,9 @@
 ## 👥 Community Corner
 
 ### Connect With Us
-[![WhatsApp](https://img.shields.io/badge/WhatsApp_Group-25D366?logo=whatsapp)](https://chat.whatsapp.com/Fmh5DoSjbWkBje0ab3RAEF)
-[![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord)](https://discord.gg/YyeZ2Sxjgf)
-[![Reddit](https://img.shields.io/badge/Subreddit-FF4500?logo=reddit)](https://www.reddit.com/r/FrGDPS)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp_Group-ffffff?logo=whatsapp)](https://chat.whatsapp.com/Fmh5DoSjbWkBje0ab3RAEF)
+[![Discord](https://img.shields.io/badge/Discord-ffffff?logo=discord)](https://discord.gg/YyeZ2Sxjgf)
+[![Reddit](https://img.shields.io/badge/Subreddit-ffffff?logo=reddit)](https://www.reddit.com/r/FrGDPS)
 
 ---
 
