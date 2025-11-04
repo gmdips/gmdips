@@ -1,6 +1,6 @@
 <h1 align="center">
   <img src="https://fless.ps.fhgdps.com/dashboard/icon.png" width="40"/>
-  FrGDPS!!11
+  GDIPS
 </h1>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 ---
 
-## 🌱 Why FreedomGDPS!!11
+## 🌱 Why GDIPS
 
 **Not the biggest. Not the fanciest.** But built with:
 
@@ -53,7 +53,7 @@
 
 ### Essential Links
 🔗 [Latest Download](https://fless.netlify.app/download)  
-🔧 [FGD Portal](https://fless.netlify.app)  
+🔧 [GDI Portal](https://fless.netlify.app)  
 🗃️ [Database Dashboard](https://fless.ps.fhgdps.com)  
 ⭐ [GDPSHub Profile](https://gdpshub.com/gdps/2924)
 
@@ -105,10 +105,20 @@
 
 ---
 
+## Star History
+
+<a href="https://www.star-history.com/#flessan/frgdps&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=flessan/frgdps&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=flessan/frgdps&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=flessan/frgdps&type=date&legend=top-left" />
+ </picture>
+</a>
+
 ## 💬 Final Thoughts
 
 > *"We're building a digital campfire - not a perfect one, but warm enough for those who want to gather around."*  
-> – FrGDPS Owner
+> – GDIPS Owner
 
 **Thank you for embracing our imperfect journey.**  
 🧡 Your presence gives this project meaning. 🧡
