@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FrGDPS Impossible List</title>
+  <meta name="description" content="The most challenging levels in FrGDPS that push the limits of what's possible">
+  <meta name="keywords" content="FrGDPS, Geometry Dash, Impossible List, Extreme Levels">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💀</text></svg>">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-bar">
+      <div class="logo-wrap" onclick="window.location='index.html'">
+        <img src="https://picsum.photos/seed/frgdps/44/44.jpg" alt="FrDL Logo">
+        FrDL
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button class="menu-btn" id="openSidebar" aria-label="Open Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <nav class="tab-nav">
+    <a href="index.html" class="tab-nav-item">
+      <i class="fas fa-list"></i> Demon List
+    </a>
+    <a href="pemonlist.html" class="tab-nav-item">
+      <i class="fas fa-star"></i> Pemon List
+    </a>
+    <a href="impossiblelist.html" class="tab-nav-item active">
+      <i class="fas fa-skull-crossbones"></i> Impossible List
+    </a>
+    <a href="info.html" class="tab-nav-item">
+      <i class="fas fa-info-circle"></i> About
+    </a>
+  </nav>
+  
+  <aside class="sidebar" id="sidebarNav" aria-label="Sidebar navigation">
+    <button class="close-btn" id="closeSidebar" aria-label="Close Menu">
+      <i class="fas fa-times"></i>
+    </button>
+    
+    <div class="user-profile" id="userProfileSection">
+      <div class="user-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-info">
+        <h3 id="usernameDisplay">Guest User</h3>
+        <p>FrGDPS Player</p>
+        <div class="user-level">Level <span id="userLevel">1</span></div>
+        <div class="user-experience"><span id="userExperience">0</span> XP</div>
+      </div>
+      <div class="user-stats">
+        <div class="user-stat">
+          <span id="completedCount">0</span>
+          <p>Completed</p>
+        </div>
+        <div class="user-stat">
+          <span id="favoriteCount">0</span>
+          <p>Favorites</p>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <ul>
+        <li><a href="index.html"><i class="fas fa-list"></i> Demon List</a></li>
+        <li><a href="pemonlist.html"><i class="fas fa-star"></i> Pemon List</a></li>
+        <li><a href="impossiblelist.html" class="active"><i class="fas fa-skull-crossbones"></i> Impossible List</a></li>
+        <li><a href="https://forms.gle/DNvnJwDPtNNpsfUd8" target="_blank" rel="noopener noreferrer"><i class="fas fa-plus-circle"></i> Submit Level</a></li>
+        <li><a href="info.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="#" id="favoritesLink"><i class="fas fa-heart"></i> Favorites</a></li>
+        <li><a href="#" id="recentLink"><i class="fas fa-history"></i> Recently Viewed</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <p>&copy; <span id="year"></span> FrGDPS Demonlist</p>
+      <p>Made with <i class="fas fa-heart" style="color: var(--primary);"></i> by the community</p>
+    </div>
+  </aside>
+  
+  <main>
+    <div class="page-header">
+      <h2>FrGDPS Impossible List</h2>
+      <p>The most challenging levels in FrGDPS that push the limits of what's possible</p>
+    </div>
+    
+    <div class="stats-row">
+      <div class="stat-card">
+        <h3>Total Impossible</h3>
+        <p id="totalDemons">0</p>
+        <i class="fas fa-skull-crossbones"></i>
+      </div>
+      <div class="stat-card">
+        <h3>Verified</h3>
+        <p id="extremeDemons">0</p>
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-card">
+        <h3>Last Updated</h3>
+        <p id="lastUpdated">-</p>
+        <i class="fas fa-clock"></i>
+      </div>
+    </div>
+    
+    <div class="controls-section">
+      <div class="search-filter-container">
+        <div class="search-bar-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search impossible levels..." autocomplete="off">
+          <div class="search-suggestions" id="searchSuggestions"></div>
+        </div>
+        
+        <div class="filter-dropdown">
+          <button class="filter-btn" id="difficultyFilter">
+            <i class="fas fa-filter"></i>
+            <span>Difficulty</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="filter-menu" id="difficultyMenu">
+            <div class="filter-option active" data-value="all">All Difficulties</div>
+            <div class="filter-option" data-value="easy">Easy</div>
+            <div class="filter-option" data-value="medium">Medium</div>
+            <div class="filter-option" data-value="hard">Hard</div>
+            <div class="filter-option" data-value="insane">Insane</div>
+            <div class="filter-option" data-value="extreme">Extreme</div>
+          </div>
+        </div>
+        
+        <div class="filter-dropdown">
+          <button class="filter-btn" id="sortFilter">
+            <i class="fas fa-sort"></i>
+            <span>Sort By</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="filter-menu" id="sortMenu">
+            <div class="filter-option active" data-value="rank">Rank</div>
+            <div class="filter-option" data-value="name">Name</div>
+            <div class="filter-option" data-value="difficulty">Difficulty</div>
+            <div class="filter-option" data-value="creator">Creator</div>
+            <div class="filter-option" data-value="rating">Rating</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="view-controls">
+        <button class="view-btn active" id="gridView" title="Grid View">
+          <i class="fas fa-th"></i>
+        </button>
+        <button class="view-btn" id="listView" title="List View">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="action-btn" id="exportBtn">
+          <i class="fas fa-download"></i> Export
+        </button>
+        <button class="action-btn" id="randomBtn">
+          <i class="fas fa-random"></i> Random
+        </button>
+        <button class="action-btn" id="compareBtn">
+          <i class="fas fa-balance-scale"></i> Compare
+        </button>
+      </div>
+    </div>
+    
+    <div class="demon-grid" id="demonCardGrid">
+      <!-- Cards will be generated here -->
+      <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); margin-top: 2rem;" id="loadingMsg">
+        <div class="loading-spinner"></div>
+        Loading impossible levels...
+      </div>
+    </div>
+    
+    <div class="pagination" id="pagination">
+      <!-- Pagination will be generated here -->
+    </div>
+  </main>
+  
+  <!-- Modal for YouTube video -->
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Level Video</h3>
+        <button class="modal-close" id="closeVideoModal" aria-label="Close Modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <iframe id="youtubeFrame" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal for level details -->
+  <div id="detailsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="detailsModalTitle">Level Details</h3>
+        <button class="modal-close" id="closeDetailsModal" aria-label="Close Modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="level-details" id="levelDetails">
+          <!-- Details will be populated here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-secondary" id="closeDetails">Close</button>
+        <button class="modal-btn modal-btn-primary" id="watchVideo">Watch Video</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <footer>
+    <div class="footer-content">
+      <div>
+        &copy; <span id="footerYear"></span> FrGDPS Demonlist. All rights reserved.
+      </div>
+      <div class="social-links">
+        <a href="#" class="social-link" title="Discord">
+          <i class="fab fa-discord"></i>
+        </a>
+        <a href="#" class="social-link" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="#" class="social-link" title="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#" class="social-link" title="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="script.js"></script>
+  <script>
+    // Export functionality
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+  </script>
+</body>
+</html>
