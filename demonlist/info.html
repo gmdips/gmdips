@@ -4,349 +4,71 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About - FrGDPS Demonlist</title>
+  <meta name="description" content="Learn about FrGDPS Demonlist, our team, and how to contribute">
+  <meta name="keywords" content="FrGDPS, About, Team, FAQ, Difficulty System">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #ff4754;
-      --primary-dark: #e63e4a;
-      --secondary: #ff7b84;
-      --accent: #ffb74d;
-      --bg: #0f0f12;
-      --surface: #1a1a1f;
-      --surface-light: #24242b;
-      --text: #f0f0f0;
-      --text-muted: #b0b0b0;
-      --glow: rgba(255, 71, 84, 0.3);
-      --radius: 16px;
-      --radius-sm: 8px;
-      --shadow: 0 8px 24px rgba(0,0,0,0.4);
-      --success: #4caf50;
-      --warning: #ff9800;
-      --error: #f44336;
-      --easy: #4caf50;
-      --medium: #ff9800;
-      --hard: #f44336;
-      --insane: #9c27b0;
-      --extreme: #2196f3;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      transition: all 0.2s ease;
-    }
-
-    body {
-      font-family: 'Rubik', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.6;
-    }
-
-    /* Header Styles */
-    header {
-      background: var(--surface);
-      color: #fff;
-      padding: 1.5rem 1rem;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: clamp(1.8rem, 5vw, 2.5rem);
-      background: linear-gradient(45deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    /* Navigation */
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-
-    nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-    }
-
-    nav a:hover, nav a.active {
-      color: var(--text);
-      background: var(--surface-light);
-    }
-
-    nav a.active {
-      color: var(--primary);
-    }
-
-    nav a i {
-      margin-right: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    /* Main Content */
-    main {
-      flex: 1;
-      padding: 2rem 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    /* About Page Styles */
-    .about-container {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 2.5rem;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .about-header {
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .about-header h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .about-header p {
-      color: var(--text-muted);
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .about-section {
-      margin-bottom: 2.5rem;
-    }
-
-    .about-section h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .about-section h3 i {
-      font-size: 1.2rem;
-    }
-
-    .about-section p {
-      margin-bottom: 1rem;
-      line-height: 1.7;
-    }
-
-    .about-section ul {
-      margin-left: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .about-section li {
-      margin-bottom: 0.5rem;
-    }
-
-    .difficulty-examples {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-
-    .difficulty-card {
-      background: var(--surface-light);
-      border-radius: var(--radius-sm);
-      padding: 1rem;
-      border-left: 4px solid;
-    }
-
-    .difficulty-card.easy { border-left-color: var(--easy); }
-    .difficulty-card.medium { border-left-color: var(--medium); }
-    .difficulty-card.hard { border-left-color: var(--hard); }
-    .difficulty-card.insane { border-left-color: var(--insane); }
-    .difficulty-card.extreme { border-left-color: var(--extreme); }
-
-    .difficulty-card h4 {
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .difficulty-card p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* Team Section */
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .team-member {
-      background: var(--surface-light);
-      border-radius: var(--radius-sm);
-      padding: 1.5rem;
-      text-align: center;
-    }
-
-    .team-member img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 1rem;
-      border: 3px solid var(--primary);
-    }
-
-    .team-member h4 {
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
-    }
-
-    .team-member .role {
-      color: var(--primary);
-      font-weight: 500;
-      font-size: 0.9rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .team-member .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 0.8rem;
-    }
-
-    .team-member .social-links a {
-      color: var(--text-muted);
-      font-size: 1rem;
-    }
-
-    .team-member .social-links a:hover {
-      color: var(--primary);
-    }
-
-    /* Footer */
-    footer {
-      background: var(--surface);
-      color: var(--text-muted);
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-top: auto;
-      font-size: 0.9rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .footer-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* Mobile Menu */
-    .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.5rem;
-      cursor: pointer;
-      position: absolute;
-      left: 1rem;
-      top: 1.5rem;
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 768px) {
-      nav {
-        flex-direction: column;
-        gap: 0.5rem;
-        display: none;
-        width: 100%;
-        background: var(--surface-light);
-        padding: 1rem;
-        border-radius: var(--radius-sm);
-        margin-top: 1rem;
-      }
-
-      nav.active {
-        display: flex;
-      }
-
-      .mobile-menu-btn {
-        display: block;
-      }
-
-      .about-container {
-        padding: 1.5rem;
-      }
-
-      .difficulty-examples {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ℹ️</text></svg>">
 </head>
 <body>
   <header>
-    <div class="header-container">
-      <button class="mobile-menu-btn" id="mobileMenuBtn">
-        <i class="fas fa-bars"></i>
-      </button>
-      <h1>FrDL</h1>
-      <img src="demon.png" alt="FrDL Logo" style="max-height: 50px; margin-bottom: .5rem;" />
-      <nav id="mainNav">
-        <a href="index.html"><i class="fas fa-list"></i> Demon List</a>
-        <a href="https://forms.gle/DNvnJwDPtNNpsfUd8"><i class="fas fa-plus-circle"></i> Submit Level</a>
-        <a href="info.html" class="active"><i class="fas fa-info-circle"></i> About</a>
-        <a href="best.html"><i class="fas fa-trophy"></i> Leaderboard</a>
-      </nav>
+    <div class="header-bar">
+      <div class="logo-wrap" onclick="window.location='index.html'">
+        <img src="https://picsum.photos/seed/frgdps/44/44.jpg" alt="FrDL Logo">
+        FrDL
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button class="menu-btn" id="openSidebar" aria-label="Open Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
     </div>
   </header>
-
+  
+  <nav class="tab-nav">
+    <a href="index.html" class="tab-nav-item">
+      <i class="fas fa-list"></i> Demon List
+    </a>
+    <a href="pemonlist.html" class="tab-nav-item">
+      <i class="fas fa-star"></i> Pemon List
+    </a>
+    <a href="impossiblelist.html" class="tab-nav-item">
+      <i class="fas fa-skull-crossbones"></i> Impossible List
+    </a>
+    <a href="info.html" class="tab-nav-item active">
+      <i class="fas fa-info-circle"></i> About
+    </a>
+  </nav>
+  
+  <aside class="sidebar" id="sidebarNav" aria-label="Sidebar navigation">
+    <button class="close-btn" id="closeSidebar" aria-label="Close Menu">
+      <i class="fas fa-times"></i>
+    </button>
+    
+    <nav>
+      <ul>
+        <li><a href="index.html"><i class="fas fa-list"></i> Demon List</a></li>
+        <li><a href="pemonlist.html"><i class="fas fa-star"></i> Pemon List</a></li>
+        <li><a href="impossiblelist.html"><i class="fas fa-skull-crossbones"></i> Impossible List</a></li>
+        <li><a href="https://forms.gle/DNvnJwDPtNNpsfUd8" target="_blank" rel="noopener noreferrer"><i class="fas fa-plus-circle"></i> Submit Level</a></li>
+        <li><a href="info.html" class="active"><i class="fas fa-info-circle"></i> About</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <p>&copy; <span id="year"></span> FrGDPS Demonlist</p>
+      <p>Made with <i class="fas fa-heart" style="color: var(--primary);"></i> by the community</p>
+    </div>
+  </aside>
+  
   <main>
     <div class="about-container">
       <div class="about-header">
         <h2><i class="fas fa-info-circle"></i> About FrGDPS Demonlist</h2>
-        <p>Community platform to categorize and rank the hardest demon levels in FrGDPS</p>
+        <p>Community platform to categorize and rank the hardest levels in FrGDPS</p>
       </div>
 
       <div class="about-section">
@@ -357,21 +79,19 @@
 
       <div class="about-section">
         <h3><i class="fas fa-bullseye"></i> Purpose of This Website</h3>
-        <p>FrGDPS Demonlist was created with several main goals in mind.:</p>
+        <p>FrGDPS Demonlist was created with several main goals in mind:</p>
         <ul>
-          <li>FrGDPS Demonlist was created with several main goals in mind. trusted about the hardest demon levels in FrGDPS</li>
+          <li>Provide trusted information about the hardest demon levels in FrGDPS</li>
           <li>Recognize the achievements of players who have completed difficult levels</li>
           <li>Encourage healthy competition among players to achieve the highest ranking</li>
           <li>Provide a platform to share proof of level completion (verification)</li>
-          <li>Provide a platform to share proof of level completion (verification)</li>
-          <li>Help new players find challenges that suit their skills</li>
           <li>Help new players find challenges that suit their skills</li>
         </ul>
       </div>
 
       <div class="about-section">
         <h3><i class="fas fa-layer-group"></i> Difficulty System</h3>
-        <p>We use a demon classification system with 5 main difficulty levels.:</p>
+        <p>We use a demon classification system with 5 main difficulty levels:</p>
         
         <div class="difficulty-examples">
           <div class="difficulty-card easy">
@@ -392,14 +112,38 @@
           </div>
           <div class="difficulty-card extreme">
             <h4><i class="fas fa-skull"></i> Extreme Demon</h4>
-            <p>The highest level, only the hardest levels fall into this category. Example: tertinggi, hanya level terberat yang masuk kategori ini. Contoh: Bloodbath, Zodiac</p>
+            <p>The highest level, only the hardest levels fall into this category. Example: Bloodbath, Zodiac</p>
           </div>
         </div>
       </div>
 
       <div class="about-section">
+        <h3><i class="fas fa-star"></i> Pemon List</h3>
+        <p>The Pemon List is a separate ranking system for platformer levels in FrGDPS. These levels focus on precise platforming mechanics rather than traditional demon gameplay.</p>
+        <p>Platformer levels are evaluated based on:</p>
+        <ul>
+          <li>Platforming difficulty and precision required</li>
+          <li>Level design and creativity</li>
+          <li>Length and complexity</li>
+          <li>Visual aesthetics and decoration</li>
+        </ul>
+      </div>
+
+      <div class="about-section">
+        <h3><i class="fas fa-skull-crossbones"></i> Impossible List</h3>
+        <p>The Impossible List contains the most challenging levels in FrGDPS that push the boundaries of what's possible in the game.</p>
+        <p>These levels are characterized by:</p>
+        <ul>
+          <li>Extreme difficulty that requires near-perfect execution</li>
+          <li>Complex gameplay mechanics and patterns</li>
+          <li>High skill ceiling with minimal room for error</li>
+          <li>Often featuring unique gameplay elements not seen in other levels</li>
+        </ul>
+      </div>
+
+      <div class="about-section">
         <h3><i class="fas fa-users"></i> Our Team</h3>
-        <p>FrGDPS Demonlist managed by a team of volunteers from the community:</p>
+        <p>FrGDPS Demonlist is managed by a team of volunteers from the community:</p>
         
         <div class="team-grid">
           <div class="team-member">
@@ -407,9 +151,9 @@
             <h4>Fless</h4>
             <div class="role">Project Leader</div>
             <div class="social-links">
-              <a href="https://www.tiktok.com/@ameliapt_"><i class="fab fa-tiktok"></i></a>
-              <a href="https://www.youtube.com/@ameliaptz"><i class="fab fa-youtube"></i></a>
-              <a href="https://discord.gg/6HEyQBcM6E"><i class="fab fa-discord"></i></a>
+              <a href="https://www.tiktok.com/@ameliapt_" target="_blank"><i class="fab fa-tiktok"></i></a>
+              <a href="https://www.youtube.com/@ameliaptz" target="_blank"><i class="fab fa-youtube"></i></a>
+              <a href="https://discord.gg/6HEyQBcM6E" target="_blank"><i class="fab fa-discord"></i></a>
             </div>
           </div>
           <div class="team-member">
@@ -417,8 +161,8 @@
             <h4>DenyZr</h4>
             <div class="role">Verifier</div>
             <div class="social-links">
-              <a href="https://www.youtube.com/@DenyZr"><i class="fab fa-youtube"></i></a>
-              <a href="DenyZr#2339"><i class="fab fa-discord"></i></a>
+              <a href="https://www.youtube.com/@DenyZr" target="_blank"><i class="fab fa-youtube"></i></a>
+              <a href="#" target="_blank"><i class="fab fa-discord"></i></a>
             </div>
           </div>
           <div class="team-member">
@@ -426,8 +170,8 @@
             <h4>AloneBG</h4>
             <div class="role">List Manager</div>
             <div class="social-links">
-              <a href="https://youtube.com/@dashinghilivq2?si=ADaIsl6ZLuAZP-TY"><i class="fab fa-youtube"></i></a>
-              <a href="ezer#7039"><i class="fab fa-discord"></i></a>
+              <a href="https://youtube.com/@dashinghilivq2?si=ADaIsl6ZLuAZP-TY" target="_blank"><i class="fab fa-youtube"></i></a>
+              <a href="#" target="_blank"><i class="fab fa-discord"></i></a>
             </div>
           </div>
         </div>
@@ -443,22 +187,100 @@
         
         <p><strong>Q: How does the ranking system work?</strong><br>
         A: Rankings are based on a combination of technical difficulty, level length, and community consensus.</p>
+        
+        <p><strong>Q: Can I contribute to the list?</strong><br>
+        A: Yes! We welcome community contributions. You can submit levels, verify completions, or provide feedback on existing rankings.</p>
+        
+        <p><strong>Q: How often is the list updated?</strong><br>
+        A: The list is updated regularly as new levels are created and verified. Check the recent updates section for the latest changes.</p>
       </div>
     </div>
   </main>
 
   <footer>
-    <div class="footer-container">
-      <p>© 2025 FrGDPS Demon List | All Rights Reserved</p>
-      <p class="mt-2">Not affiliated with Geometry Dash or RobTop Games</p>
+    <div class="footer-content">
+      <div>
+        &copy; <span id="footerYear"></span> FrGDPS Demon List | All Rights Reserved
+      </div>
+      <div class="social-links">
+        <a href="#" class="social-link" title="Discord">
+          <i class="fab fa-discord"></i>
+        </a>
+        <a href="#" class="social-link" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="#" class="social-link" title="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#" class="social-link" title="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
     </div>
   </footer>
 
   <script>
-    // Mobile menu toggle
-    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-      document.getElementById('mainNav').classList.toggle('active');
+    // Initialize theme
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set current year
+      const currentYear = new Date().getFullYear();
+      const yearElements = document.querySelectorAll('#year, #footerYear');
+      yearElements.forEach(el => {
+        if (el) el.textContent = currentYear;
+      });
+      
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+      
+      // Initialize event listeners
+      initializeEventListeners();
     });
+    
+    function initializeEventListeners() {
+      // Sidebar navigation
+      const sidebar = document.getElementById('sidebarNav');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      if (openSidebarBtn && closeSidebarBtn) {
+        openSidebarBtn.onclick = () => sidebar.classList.add('active');
+        closeSidebarBtn.onclick = () => sidebar.classList.remove('active');
+        
+        // Close sidebar on click outside
+        document.addEventListener('click', (e) => {
+          if (
+            sidebar.classList.contains('active') &&
+            !sidebar.contains(e.target) &&
+            e.target !== openSidebarBtn && !openSidebarBtn.contains(e.target)
+          ) sidebar.classList.remove('active');
+        });
+      }
+      
+      // Theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+      }
+    }
+    
+    // Theme functions
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    }
+    
+    function updateThemeIcon(theme) {
+      const icon = document.querySelector('#themeToggle i');
+      if (icon) {
+        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      }
+    }
   </script>
 </body>
 </html>
