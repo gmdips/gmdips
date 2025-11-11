@@ -14,6 +14,10 @@ const DemonListApp = (() => {
   let recentlyViewed = [];
   let completedLevels = [];
   let userAchievements = [];
+  let userRatings = {};
+  let levelProgress = {};
+  let searchHistory = [];
+  let communityReviews = {};
   let currentPage = 1;
   const ITEMS_PER_PAGE = 12;
   let currentSort = 'rank';
@@ -26,7 +30,8 @@ const DemonListApp = (() => {
     completedCount: 0,
     favoriteCount: 0,
     level: 1,
-    experience: 0
+    experience: 0,
+    joinDate: new Date().toISOString()
   };
   
   // Data sources configuration
@@ -78,14 +83,28 @@ const DemonListApp = (() => {
       title: 'Critic',
       description: 'Rate 5 levels',
       icon: 'fa-star',
-      condition: () => userProfile.experience >= 50
+      condition: () => Object.keys(userRatings).length >= 5
+    },
+    progressTracker: {
+      id: 'progressTracker',
+      title: 'Progress Tracker',
+      description: 'Track progress on 5 levels',
+      icon: 'fa-chart-line',
+      condition: () => Object.keys(levelProgress).length >= 5
+    },
+    communityMember: {
+      id: 'communityMember',
+      title: 'Community Member',
+      description: 'Write 3 reviews',
+      icon: 'fa-comments',
+      condition: () => Object.values(communityReviews).flat().length >= 3
     }
   };
   
   // DOM element references
   const elements = {};
   
-  // Initialize the app
+  // Initialize app
   function init() {
     cacheElements();
     loadUserData();
@@ -95,6 +114,8 @@ const DemonListApp = (() => {
     updateYear();
     initializeTheme();
     setupServiceWorker();
+    setupSearchSuggestions();
+    setupRecommendationEngine();
   }
   
   // Cache DOM elements for better performance
@@ -111,6 +132,11 @@ const DemonListApp = (() => {
     elements.detailsModal = document.getElementById('detailsModal');
     elements.compareModal = document.getElementById('compareModal');
     elements.advancedFilterSection = document.getElementById('advancedFilterSection');
+    elements.ratingModal = document.getElementById('ratingModal');
+    elements.statisticsModal = document.getElementById('statisticsModal');
+    elements.reviewsModal = document.getElementById('reviewsModal');
+    elements.progressModal = document.getElementById('progressModal');
+    elements.searchSuggestions = document.getElementById('searchSuggestions');
   }
   
   // Load user data from localStorage
@@ -121,6 +147,10 @@ const DemonListApp = (() => {
     userAchievements = JSON.parse(localStorage.getItem('achievements')) || [];
     userProfile = JSON.parse(localStorage.getItem('userProfile')) || userProfile;
     viewMode = localStorage.getItem('viewMode') || 'grid';
+    userRatings = JSON.parse(localStorage.getItem('userRatings')) || {};
+    levelProgress = JSON.parse(localStorage.getItem('levelProgress')) || {};
+    searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    communityReviews = JSON.parse(localStorage.getItem('communityReviews')) || {};
   }
   
   // Initialize event listeners
@@ -137,6 +167,8 @@ const DemonListApp = (() => {
     // Search functionality
     if (elements.searchInput) {
       elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
+      elements.searchInput.addEventListener('focus', showSearchSuggestions);
+      elements.searchInput.addEventListener('blur', hideSearchSuggestions);
     }
     
     // Filter menus
@@ -186,6 +218,8 @@ const DemonListApp = (() => {
     // Sidebar links
     const favoritesLink = document.getElementById('favoritesLink');
     const recentLink = document.getElementById('recentLink');
+    const achievementsLink = document.getElementById('achievementsLink');
+    const progressLink = document.getElementById('progressLink');
     
     if (favoritesLink) {
       favoritesLink.addEventListener('click', (e) => {
@@ -198,6 +232,20 @@ const DemonListApp = (() => {
       recentLink.addEventListener('click', (e) => {
         e.preventDefault();
         showRecentlyViewed();
+      });
+    }
+    
+    if (achievementsLink) {
+      achievementsLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAchievements();
+      });
+    }
+    
+    if (progressLink) {
+      progressLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showProgress();
       });
     }
   }
@@ -246,6 +294,8 @@ const DemonListApp = (() => {
     const randomBtn = document.getElementById('randomBtn');
     const compareBtn = document.getElementById('compareBtn');
     const advancedFilterBtn = document.getElementById('advancedFilterBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const recommendationsBtn = document.getElementById('recommendationsBtn');
     
     if (randomBtn) {
       randomBtn.addEventListener('click', showRandomDemon);
@@ -258,6 +308,14 @@ const DemonListApp = (() => {
     if (advancedFilterBtn) {
       advancedFilterBtn.addEventListener('click', toggleAdvancedFilters);
     }
+    
+    if (exportBtn) {
+      exportBtn.addEventListener('click', exportData);
+    }
+    
+    if (recommendationsBtn) {
+      recommendationsBtn.addEventListener('click', showRecommendations);
+    }
   }
   
   // Setup modal controls
@@ -266,6 +324,10 @@ const DemonListApp = (() => {
     const closeDetailsModal = document.getElementById('closeDetailsModal');
     const closeDetails = document.getElementById('closeDetails');
     const watchVideo = document.getElementById('watchVideo');
+    const closeRatingModal = document.getElementById('closeRatingModal');
+    const closeStatisticsModal = document.getElementById('closeStatisticsModal');
+    const closeReviewsModal = document.getElementById('closeReviewsModal');
+    const closeProgressModal = document.getElementById('closeProgressModal');
     
     if (closeVideoModal) {
       closeVideoModal.addEventListener('click', closeVideoModalFn);
@@ -289,6 +351,22 @@ const DemonListApp = (() => {
       });
     }
     
+    if (closeRatingModal) {
+      closeRatingModal.addEventListener('click', closeRatingModalFn);
+    }
+    
+    if (closeStatisticsModal) {
+      closeStatisticsModal.addEventListener('click', closeStatisticsModalFn);
+    }
+    
+    if (closeReviewsModal) {
+      closeReviewsModal.addEventListener('click', closeReviewsModalFn);
+    }
+    
+    if (closeProgressModal) {
+      closeProgressModal.addEventListener('click', closeProgressModalFn);
+    }
+    
     // Close modals on background click
     if (elements.videoModal) {
       elements.videoModal.addEventListener('click', (e) => {
@@ -301,6 +379,30 @@ const DemonListApp = (() => {
         if (e.target === e.currentTarget) closeDetailsModalFn();
       });
     }
+    
+    if (elements.ratingModal) {
+      elements.ratingModal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeRatingModalFn();
+      });
+    }
+    
+    if (elements.statisticsModal) {
+      elements.statisticsModal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeStatisticsModalFn();
+      });
+    }
+    
+    if (elements.reviewsModal) {
+      elements.reviewsModal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeReviewsModalFn();
+      });
+    }
+    
+    if (elements.progressModal) {
+      elements.progressModal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeProgressModalFn();
+      });
+    }
   }
   
   // Setup keyboard shortcuts
@@ -309,6 +411,10 @@ const DemonListApp = (() => {
       if (e.key === 'Escape') {
         closeVideoModalFn();
         closeDetailsModalFn();
+        closeRatingModalFn();
+        closeStatisticsModalFn();
+        closeReviewsModalFn();
+        closeProgressModalFn();
       }
       
       // Ctrl/Cmd + K for search
@@ -321,6 +427,12 @@ const DemonListApp = (() => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
         showFavorites();
+      }
+      
+      // Ctrl/Cmd + R for recommendations
+      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault();
+        showRecommendations();
       }
       
       // Number keys for quick page navigation
@@ -389,6 +501,25 @@ const DemonListApp = (() => {
     }
   }
   
+  // Setup search suggestions
+  function setupSearchSuggestions() {
+    if (!elements.searchSuggestions) {
+      elements.searchSuggestions = document.createElement('div');
+      elements.searchSuggestions.className = 'search-suggestions';
+      elements.searchSuggestions.style.display = 'none';
+      
+      if (elements.searchInput && elements.searchInput.parentElement) {
+        elements.searchInput.parentElement.appendChild(elements.searchSuggestions);
+      }
+    }
+  }
+  
+  // Setup recommendation engine
+  function setupRecommendationEngine() {
+    // Initialize recommendation engine based on user preferences
+    // This would analyze user behavior and suggest relevant levels
+  }
+  
   // Update current year in footer
   function updateYear() {
     const currentYear = new Date().getFullYear();
@@ -400,9 +531,20 @@ const DemonListApp = (() => {
   
   // Initialize theme
   function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    // Check for system preference first
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme') || (prefersDarkMode ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme')) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        updateThemeIcon(newTheme);
+      }
+    });
   }
   
   // Setup service worker for offline support
@@ -425,6 +567,11 @@ const DemonListApp = (() => {
     }
     
     try {
+      // Check if Papa Parse is available
+      if (typeof Papa === 'undefined') {
+        throw new Error('Papa Parse library is not loaded');
+      }
+      
       // Determine which data source to use based on current page
       let dataSource;
       let dataVariable;
@@ -526,6 +673,7 @@ const DemonListApp = (() => {
           <li>Google Sheets being temporarily unavailable</li>
           <li>Changes in data structure</li>
           <li>CORS restrictions</li>
+          <li>Missing Papa Parse library</li>
         </ul>
         <div class="error-actions">
           <button class="action-btn" onclick="DemonListApp.retryLoading()">
@@ -608,7 +756,25 @@ const DemonListApp = (() => {
         'Level Placement Opinion': 'Extreme',
         'Video Link': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         Rating: 4.5,
-        Tags: 'Sample,Test,Demo'
+        Tags: 'Sample,Test,Demo',
+        Description: 'This is a sample demon level for testing purposes.',
+        Length: '2m 30s',
+        Objects: '15000',
+        Downloads: '5000'
+      },
+      {
+        Level: 'Another Sample',
+        'ID Level': '789012',
+        Creators: 'AnotherCreator',
+        'Display Nickname': 'AnotherVerifier',
+        'Level Placement Opinion': 'Insane',
+        'Video Link': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        Rating: 3.5,
+        Tags: 'Sample,Test,Another',
+        Description: 'Another sample demon level for testing purposes.',
+        Length: '1m 45s',
+        Objects: '12000',
+        Downloads: '3000'
       }
     ];
     
@@ -740,11 +906,47 @@ const DemonListApp = (() => {
   function addToSearchHistory(term) {
     if (!term) return;
     
-    let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    history = history.filter(h => h !== term);
-    history.unshift(term);
-    history = history.slice(0, 10); // Keep only last 10 searches
-    localStorage.setItem('searchHistory', JSON.stringify(history));
+    searchHistory = searchHistory.filter(h => h !== term);
+    searchHistory.unshift(term);
+    searchHistory = searchHistory.slice(0, 10); // Keep only last 10 searches
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+  }
+  
+  // Show search suggestions
+  function showSearchSuggestions() {
+    if (!elements.searchSuggestions) return;
+    
+    elements.searchSuggestions.innerHTML = '';
+    
+    if (searchHistory.length > 0) {
+      const historyTitle = document.createElement('div');
+      historyTitle.className = 'suggestion-title';
+      historyTitle.textContent = 'Recent Searches';
+      elements.searchSuggestions.appendChild(historyTitle);
+      
+      searchHistory.slice(0, 5).forEach(term => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.className = 'suggestion-item';
+        suggestionItem.textContent = term;
+        suggestionItem.addEventListener('click', () => {
+          elements.searchInput.value = term;
+          handleSearch();
+          hideSearchSuggestions();
+        });
+        elements.searchSuggestions.appendChild(suggestionItem);
+      });
+    }
+    
+    elements.searchSuggestions.style.display = 'block';
+  }
+  
+  // Hide search suggestions
+  function hideSearchSuggestions() {
+    if (elements.searchSuggestions) {
+      setTimeout(() => {
+        elements.searchSuggestions.style.display = 'none';
+      }, 200);
+    }
   }
   
   // Toggle difficulty menu
@@ -965,6 +1167,8 @@ const DemonListApp = (() => {
     const videoId = getYouTubeId(videoUrl);
     const isFavorite = favorites.includes(id);
     const isCompleted = completedLevels.includes(id);
+    const userRating = userRatings[id] || 0;
+    const progress = levelProgress[id] || 0;
     
     // Create card element
     const card = document.createElement('div');
@@ -990,6 +1194,19 @@ const DemonListApp = (() => {
       completionBadge.className = 'completion-badge';
       completionBadge.innerHTML = '<i class="fas fa-check"></i> Completed';
       card.appendChild(completionBadge);
+    }
+    
+    // Progress bar
+    if (progress > 0 && !isCompleted) {
+      const progressBar = document.createElement('div');
+      progressBar.className = 'card-progress';
+      progressBar.innerHTML = `
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${progress}%"></div>
+        </div>
+        <span class="progress-text">${progress}%</span>
+      `;
+      card.appendChild(progressBar);
     }
     
     // Thumbnail
@@ -1073,22 +1290,25 @@ const DemonListApp = (() => {
     content.appendChild(creatorRow);
     
     // Rating
-    if (rating > 0) {
+    if (rating > 0 || userRating > 0) {
       const ratingContainer = document.createElement('div');
       ratingContainer.className = 'rating-container';
       
       const ratingStars = document.createElement('div');
       ratingStars.className = 'rating-stars';
       
+      // Use user rating if available, otherwise use default rating
+      const displayRating = userRating > 0 ? userRating : rating;
+      
       for (let i = 1; i <= 5; i++) {
         const star = document.createElement('i');
-        star.className = i <= rating ? 'fas fa-star' : 'far fa-star';
+        star.className = i <= displayRating ? 'fas fa-star' : 'far fa-star';
         ratingStars.appendChild(star);
       }
       
       const ratingValue = document.createElement('div');
       ratingValue.className = 'rating-value';
-      ratingValue.textContent = `${rating}/5`;
+      ratingValue.textContent = `${displayRating}/5`;
       
       ratingContainer.appendChild(ratingStars);
       ratingContainer.appendChild(ratingValue);
@@ -1125,6 +1345,22 @@ const DemonListApp = (() => {
       addToRecentlyViewed(row);
     });
     actions.appendChild(detailsBtn);
+    
+    const rateBtn = document.createElement('button');
+    rateBtn.className = 'card-action-btn';
+    rateBtn.innerHTML = '<i class="fas fa-star"></i> Rate';
+    rateBtn.addEventListener('click', () => {
+      showRatingModal(row);
+    });
+    actions.appendChild(rateBtn);
+    
+    const progressBtn = document.createElement('button');
+    progressBtn.className = 'card-action-btn';
+    progressBtn.innerHTML = '<i class="fas fa-chart-line"></i> Progress';
+    progressBtn.addEventListener('click', () => {
+      showProgressModal(row);
+    });
+    actions.appendChild(progressBtn);
     
     const compareBtn = document.createElement('button');
     compareBtn.className = 'card-action-btn';
@@ -1276,6 +1512,8 @@ const DemonListApp = (() => {
     const modalTitle = document.getElementById('detailsModalTitle');
     const levelDetails = document.getElementById('levelDetails');
     const watchVideoBtn = document.getElementById('watchVideo');
+    const statisticsBtn = document.getElementById('statisticsBtn');
+    const reviewsBtn = document.getElementById('reviewsBtn');
     
     if (!elements.detailsModal || !modalTitle || !levelDetails) return;
     
@@ -1304,6 +1542,9 @@ const DemonListApp = (() => {
     
     const isCompleted = completedLevels.includes(id);
     const isFavorite = favorites.includes(id);
+    const userRating = userRatings[id] || 0;
+    const progress = levelProgress[id] || 0;
+    const reviews = communityReviews[id] || [];
     
     levelDetails.innerHTML = `
       <div class="detail-group">
@@ -1331,7 +1572,22 @@ const DemonListApp = (() => {
       <div class="detail-group">
         <div class="detail-label">Rating</div>
         <div class="detail-value">
-          ${generateStarRating(rating)}
+          ${userRating > 0 ? 
+            `<div>${generateStarRating(userRating)} <span class="rating-note">(Your rating)</span></div>` : 
+            generateStarRating(rating)
+          }
+        </div>
+      </div>
+      <div class="detail-group">
+        <div class="detail-label">Progress</div>
+        <div class="detail-value">
+          ${isCompleted ? 
+            '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Completed</span>' : 
+            progress > 0 ? 
+              `<div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div>
+               <span class="progress-text">${progress}%</span>` : 
+              '<span style="color: var(--text-muted);"><i class="far fa-circle"></i> Not Started</span>'
+          }
         </div>
       </div>
       <div class="detail-group">
@@ -1349,18 +1605,18 @@ const DemonListApp = (() => {
       <div class="detail-group">
         <div class="detail-label">Status</div>
         <div class="detail-value">
-          ${isCompleted ? 
-            '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Completed</span>' : 
-            '<span style="color: var(--text-muted);"><i class="far fa-circle"></i> Not Completed</span>'
+          ${isFavorite ? 
+            '<span style="color: var(--primary);"><i class="fas fa-heart"></i> Favorited</span>' : 
+            '<span style="color: var(--text-muted);"><i class="far fa-heart"></i> Not Favorited</span>'
           }
         </div>
       </div>
       <div class="detail-group">
-        <div class="detail-label">Favorite</div>
+        <div class="detail-label">Community Reviews</div>
         <div class="detail-value">
-          ${isFavorite ? 
-            '<span style="color: var(--primary);"><i class="fas fa-heart"></i> Favorited</span>' : 
-            '<span style="color: var(--text-muted);"><i class="far fa-heart"></i> Not Favorited</span>'
+          ${reviews.length > 0 ? 
+            `<span>${reviews.length} review(s)</span>` : 
+            '<span style="color: var(--text-muted);">No reviews yet</span>'
           }
         </div>
       </div>
@@ -1385,8 +1641,928 @@ const DemonListApp = (() => {
       </div>
     `;
     
+    // Add action buttons to modal footer if they don't exist
+    let modalFooter = document.querySelector('#detailsModal .modal-footer');
+    if (!modalFooter) {
+      modalFooter = document.createElement('div');
+      modalFooter.className = 'modal-footer';
+      elements.detailsModal.appendChild(modalFooter);
+    }
+    
+    modalFooter.innerHTML = '';
+    
+    // Rate button
+    const rateBtn = document.createElement('button');
+    rateBtn.className = 'modal-btn modal-btn-primary';
+    rateBtn.innerHTML = '<i class="fas fa-star"></i> Rate Level';
+    rateBtn.addEventListener('click', () => {
+      closeDetailsModalFn();
+      showRatingModal(level);
+    });
+    modalFooter.appendChild(rateBtn);
+    
+    // Progress button
+    const progressBtn = document.createElement('button');
+    progressBtn.className = 'modal-btn modal-btn-primary';
+    progressBtn.innerHTML = '<i class="fas fa-chart-line"></i> Update Progress';
+    progressBtn.addEventListener('click', () => {
+      closeDetailsModalFn();
+      showProgressModal(level);
+    });
+    modalFooter.appendChild(progressBtn);
+    
+    // Statistics button
+    if (statisticsBtn) {
+      const statsBtn = document.createElement('button');
+      statsBtn.className = 'modal-btn modal-btn-secondary';
+      statsBtn.innerHTML = '<i class="fas fa-chart-bar"></i> Statistics';
+      statsBtn.addEventListener('click', () => {
+        closeDetailsModalFn();
+        showStatisticsModal(level);
+      });
+      modalFooter.appendChild(statsBtn);
+    }
+    
+    // Reviews button
+    if (reviewsBtn) {
+      const reviewBtn = document.createElement('button');
+      reviewBtn.className = 'modal-btn modal-btn-secondary';
+      reviewBtn.innerHTML = '<i class="fas fa-comments"></i> Reviews';
+      reviewBtn.addEventListener('click', () => {
+        closeDetailsModalFn();
+        showReviewsModal(level);
+      });
+      modalFooter.appendChild(reviewBtn);
+    }
+    
+    // Close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'modal-btn modal-btn-secondary';
+    closeBtn.innerHTML = '<i class="fas fa-times"></i> Close';
+    closeBtn.addEventListener('click', closeDetailsModalFn);
+    modalFooter.appendChild(closeBtn);
+    
     elements.detailsModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+  }
+  
+  // Show rating modal
+  function showRatingModal(level) {
+    const modalTitle = document.getElementById('ratingModalTitle');
+    const ratingContent = document.getElementById('ratingContent');
+    const submitRatingBtn = document.getElementById('submitRating');
+    
+    if (!elements.ratingModal || !modalTitle || !ratingContent) return;
+    
+    const name = level['Level'] || level['Name'] || '-';
+    const id = level['ID Level'] || level['ID'] || '';
+    const currentRating = userRatings[id] || 0;
+    
+    modalTitle.textContent = `Rate: ${name}`;
+    
+    ratingContent.innerHTML = `
+      <div class="rating-input-container">
+        <p>Your rating for this level:</p>
+        <div class="rating-input-stars" data-level-id="${id}">
+          ${[1, 2, 3, 4, 5].map(i => 
+            `<i class="${i <= currentRating ? 'fas' : 'far'} fa-star" data-rating="${i}"></i>`
+          ).join('')}
+        </div>
+        <div class="rating-note">Click on a star to rate</div>
+      </div>
+      <div class="rating-comment-container">
+        <label for="ratingComment">Leave a comment (optional):</label>
+        <textarea id="ratingComment" rows="4" placeholder="Share your thoughts on this level..."></textarea>
+      </div>
+    `;
+    
+    // Add event listeners to stars
+    const stars = document.querySelectorAll('.rating-input-stars i');
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        const rating = parseInt(this.dataset.rating);
+        const levelId = this.parentElement.dataset.levelId;
+        
+        // Update star display
+        stars.forEach((s, index) => {
+          s.className = index < rating ? 'fas fa-star' : 'far fa-star';
+        });
+        
+        // Store rating temporarily
+        this.parentElement.dataset.currentRating = rating;
+      });
+      
+      star.addEventListener('mouseenter', function() {
+        const rating = parseInt(this.dataset.rating);
+        
+        // Preview rating on hover
+        stars.forEach((s, index) => {
+          s.classList.add(index < rating ? 'fas' : 'far');
+          s.classList.remove(index < rating ? 'far' : 'fas');
+        });
+      });
+    });
+    
+    // Reset on mouse leave
+    document.querySelector('.rating-input-stars').addEventListener('mouseleave', function() {
+      const currentRating = parseInt(this.dataset.currentRating) || 0;
+      
+      stars.forEach((s, index) => {
+        s.className = index < currentRating ? 'fas fa-star' : 'far fa-star';
+      });
+    });
+    
+    // Set initial rating
+    document.querySelector('.rating-input-stars').dataset.currentRating = currentRating;
+    
+    // Submit rating
+    if (submitRatingBtn) {
+      submitRatingBtn.onclick = function() {
+        const ratingContainer = document.querySelector('.rating-input-stars');
+        const rating = parseInt(ratingContainer.dataset.currentRating) || 0;
+        const comment = document.getElementById('ratingComment').value.trim();
+        
+        if (rating === 0) {
+          showToast('Please select a rating', 'warning');
+          return;
+        }
+        
+        // Save rating
+        userRatings[id] = rating;
+        localStorage.setItem('userRatings', JSON.stringify(userRatings));
+        
+        // Save comment if provided
+        if (comment) {
+          if (!communityReviews[id]) {
+            communityReviews[id] = [];
+          }
+          
+          communityReviews[id].push({
+            username: userProfile.username,
+            rating: rating,
+            comment: comment,
+            date: new Date().toISOString()
+          });
+          
+          localStorage.setItem('communityReviews', JSON.stringify(communityReviews));
+        }
+        
+        // Award experience points
+        userProfile.experience += 5;
+        localStorage.setItem('userProfile', JSON.stringify(userProfile));
+        updateUserProfile();
+        
+        // Check for achievements
+        checkAchievements();
+        
+        showToast(`You rated this level ${rating} star${rating > 1 ? 's' : ''}`, 'success');
+        closeRatingModalFn();
+        
+        // Update UI if level is currently displayed
+        renderCards();
+      };
+    }
+    
+    elements.ratingModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // Show progress modal
+  function showProgressModal(level) {
+    const modalTitle = document.getElementById('progressModalTitle');
+    const progressContent = document.getElementById('progressContent');
+    const updateProgressBtn = document.getElementById('updateProgress');
+    
+    if (!elements.progressModal || !modalTitle || !progressContent) return;
+    
+    const name = level['Level'] || level['Name'] || '-';
+    const id = level['ID Level'] || level['ID'] || '';
+    const currentProgress = levelProgress[id] || 0;
+    const isCompleted = completedLevels.includes(id);
+    
+    modalTitle.textContent = `Progress: ${name}`;
+    
+    progressContent.innerHTML = `
+      <div class="progress-input-container">
+        <p>Your progress on this level:</p>
+        <div class="progress-bar-container">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${currentProgress}%"></div>
+          </div>
+          <span class="progress-text">${currentProgress}%</span>
+        </div>
+        <div class="progress-slider-container">
+          <label for="progressSlider">Adjust Progress:</label>
+          <input type="range" id="progressSlider" min="0" max="100" value="${currentProgress}" class="progress-slider">
+          <div class="progress-value">${currentProgress}%</div>
+        </div>
+        <div class="progress-notes-container">
+          <label for="progressNotes">Notes (optional):</label>
+          <textarea id="progressNotes" rows="4" placeholder="Add notes about your progress..."></textarea>
+        </div>
+      </div>
+    `;
+    
+    // Update progress when slider changes
+    const progressSlider = document.getElementById('progressSlider');
+    const progressValue = document.querySelector('.progress-value');
+    const progressFill = document.querySelector('.progress-fill');
+    const progressText = document.querySelector('.progress-text');
+    
+    if (progressSlider) {
+      progressSlider.addEventListener('input', function() {
+        const value = this.value;
+        progressValue.textContent = `${value}%`;
+        progressFill.style.width = `${value}%`;
+        progressText.textContent = `${value}%`;
+      });
+    }
+    
+    // Update progress
+    if (updateProgressBtn) {
+      updateProgressBtn.onclick = function() {
+        const newProgress = parseInt(progressSlider.value);
+        const notes = document.getElementById('progressNotes').value.trim();
+        
+        // Save progress
+        levelProgress[id] = newProgress;
+        localStorage.setItem('levelProgress', JSON.stringify(levelProgress));
+        
+        // Check if level is now completed
+        if (newProgress === 100 && !isCompleted) {
+          completedLevels.push(id);
+          localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+          
+          // Award experience points for completion
+          userProfile.experience += 10;
+          localStorage.setItem('userProfile', JSON.stringify(userProfile));
+          
+          showToast('Congratulations! You completed this level!', 'success');
+        } else if (newProgress < 100 && isCompleted) {
+          // Remove from completed if progress is less than 100
+          const index = completedLevels.indexOf(id);
+          if (index > -1) {
+            completedLevels.splice(index, 1);
+            localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+          }
+          
+          showToast('Progress updated', 'info');
+        } else {
+          showToast('Progress updated', 'info');
+        }
+        
+        // Save notes if provided
+        if (notes) {
+          if (!levelProgress[id]) {
+            levelProgress[id] = {};
+          }
+          
+          levelProgress[id].notes = notes;
+          localStorage.setItem('levelProgress', JSON.stringify(levelProgress));
+        }
+        
+        updateUserProfile();
+        checkAchievements();
+        closeProgressModalFn();
+        
+        // Update UI if level is currently displayed
+        renderCards();
+      };
+    }
+    
+    elements.progressModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // Show statistics modal
+  function showStatisticsModal(level) {
+    const modalTitle = document.getElementById('statisticsModalTitle');
+    const statisticsContent = document.getElementById('statisticsContent');
+    
+    if (!elements.statisticsModal || !modalTitle || !statisticsContent) return;
+    
+    const name = level['Level'] || level['Name'] || '-';
+    const id = level['ID Level'] || level['ID'] || '';
+    const difficultyColumn = level['Level Placement Opinion'] || level['Difficulty'] || 'Unknown';
+    const rating = level['Rating'] || 0;
+    const downloads = parseInt(level['Downloads']) || 0;
+    const reviews = communityReviews[id] || [];
+    
+    // Calculate average rating from community reviews
+    let avgRating = rating;
+    if (reviews.length > 0) {
+      const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+      avgRating = (sum / reviews.length).toFixed(1);
+    }
+    
+    modalTitle.textContent = `Statistics: ${name}`;
+    
+    statisticsContent.innerHTML = `
+      <div class="statistics-container">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">${avgRating}/5</div>
+            <div class="stat-label">Average Rating</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-download"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">${downloads.toLocaleString()}</div>
+            <div class="stat-label">Downloads</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">${reviews.length}</div>
+            <div class="stat-label">Reviews</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">${favorites.includes(id) ? 'Favorited' : 'Not Favorited'}</div>
+            <div class="stat-label">Your Status</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">${levelProgress[id] || 0}%</div>
+            <div class="stat-label">Your Progress</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">${difficultyColumn}</div>
+            <div class="stat-label">Difficulty</div>
+          </div>
+        </div>
+      </div>
+      <div class="rating-distribution">
+        <h4>Rating Distribution</h4>
+        <div class="rating-bars">
+          ${[5, 4, 3, 2, 1].map(star => {
+            const count = reviews.filter(r => r.rating === star).length;
+            const percentage = reviews.length > 0 ? (count / reviews.length * 100).toFixed(0) : 0;
+            return `
+              <div class="rating-bar">
+                <div class="rating-stars">${'<i class="fas fa-star"></i>'.repeat(star)}</div>
+                <div class="rating-bar-container">
+                  <div class="rating-bar-fill" style="width: ${percentage}%"></div>
+                </div>
+                <div class="rating-count">${count}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+    
+    elements.statisticsModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // Show reviews modal
+  function showReviewsModal(level) {
+    const modalTitle = document.getElementById('reviewsModalTitle');
+    const reviewsContent = document.getElementById('reviewsContent');
+    const addReviewBtn = document.getElementById('addReview');
+    
+    if (!elements.reviewsModal || !modalTitle || !reviewsContent) return;
+    
+    const name = level['Level'] || level['Name'] || '-';
+    const id = level['ID Level'] || level['ID'] || '';
+    const reviews = communityReviews[id] || [];
+    
+    modalTitle.textContent = `Reviews: ${name}`;
+    
+    reviewsContent.innerHTML = `
+      <div class="reviews-container">
+        ${reviews.length > 0 ? 
+          reviews.map(review => `
+            <div class="review-card">
+              <div class="review-header">
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">
+                    <i class="fas fa-user-circle"></i>
+                  </div>
+                  <div class="reviewer-details">
+                    <div class="reviewer-name">${review.username}</div>
+                    <div class="review-date">${formatDate(new Date(review.date))}</div>
+                  </div>
+                </div>
+                <div class="review-rating">
+                  ${generateStarRating(review.rating)}
+                </div>
+              </div>
+              <div class="review-comment">${review.comment}</div>
+            </div>
+          `).join('') : 
+          '<div class="no-reviews">No reviews yet. Be the first to review this level!</div>'
+        }
+      </div>
+    `;
+    
+    // Add review button
+    if (addReviewBtn) {
+      addReviewBtn.onclick = function() {
+        closeReviewsModalFn();
+        showRatingModal(level);
+      };
+    }
+    
+    elements.reviewsModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // Show achievements
+  function showAchievements() {
+    // Create achievements modal if it doesn't exist
+    let modal = document.getElementById('achievementsModal');
+    
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'achievementsModal';
+      modal.className = 'modal';
+      
+      const modalContent = document.createElement('div');
+      modalContent.className = 'modal-content';
+      
+      const modalHeader = document.createElement('div');
+      modalHeader.className = 'modal-header';
+      
+      const modalTitle = document.createElement('h3');
+      modalTitle.className = 'modal-title';
+      modalTitle.textContent = 'Achievements';
+      
+      const modalClose = document.createElement('button');
+      modalClose.className = 'modal-close';
+      modalClose.innerHTML = '<i class="fas fa-times"></i>';
+      modalClose.addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      modalHeader.appendChild(modalTitle);
+      modalHeader.appendChild(modalClose);
+      
+      const modalBody = document.createElement('div');
+      modalBody.className = 'modal-body';
+      modalBody.id = 'achievementsContent';
+      
+      modalContent.appendChild(modalHeader);
+      modalContent.appendChild(modalBody);
+      
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      
+      // Close modal on background click
+      modal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    
+    const achievementsContent = document.getElementById('achievementsContent');
+    if (!achievementsContent) return;
+    
+    achievementsContent.innerHTML = `
+      <div class="achievements-container">
+        <div class="achievement-stats">
+          <div class="achievement-stat">
+            <div class="stat-value">${userAchievements.length}</div>
+            <div class="stat-label">Unlocked</div>
+          </div>
+          <div class="achievement-stat">
+            <div class="stat-value">${Object.keys(ACHIEVEMENTS).length}</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="achievement-stat">
+            <div class="stat-value">${Math.round(userAchievements.length / Object.keys(ACHIEVEMENTS).length * 100)}%</div>
+            <div class="stat-label">Progress</div>
+          </div>
+        </div>
+        <div class="achievements-grid">
+          ${Object.values(ACHIEVEMENTS).map(achievement => {
+            const isUnlocked = userAchievements.includes(achievement.id);
+            return `
+              <div class="achievement-card ${isUnlocked ? 'unlocked' : 'locked'}">
+                <div class="achievement-icon">
+                  <i class="fas ${achievement.icon}"></i>
+                </div>
+                <div class="achievement-info">
+                  <div class="achievement-title">${achievement.title}</div>
+                  <div class="achievement-description">${achievement.description}</div>
+                </div>
+                <div class="achievement-status">
+                  ${isUnlocked ? 
+                    '<i class="fas fa-check-circle"></i> Unlocked' : 
+                    '<i class="fas fa-lock"></i> Locked'
+                  }
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Close sidebar
+    if (elements.sidebar) elements.sidebar.classList.remove('active');
+  }
+  
+  // Show progress
+  function showProgress() {
+    // Create progress modal if it doesn't exist
+    let modal = document.getElementById('allProgressModal');
+    
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'allProgressModal';
+      modal.className = 'modal';
+      
+      const modalContent = document.createElement('div');
+      modalContent.className = 'modal-content';
+      
+      const modalHeader = document.createElement('div');
+      modalHeader.className = 'modal-header';
+      
+      const modalTitle = document.createElement('h3');
+      modalTitle.className = 'modal-title';
+      modalTitle.textContent = 'Your Progress';
+      
+      const modalClose = document.createElement('button');
+      modalClose.className = 'modal-close';
+      modalClose.innerHTML = '<i class="fas fa-times"></i>';
+      modalClose.addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      modalHeader.appendChild(modalTitle);
+      modalHeader.appendChild(modalClose);
+      
+      const modalBody = document.createElement('div');
+      modalBody.className = 'modal-body';
+      modalBody.id = 'allProgressContent';
+      
+      modalContent.appendChild(modalHeader);
+      modalContent.appendChild(modalBody);
+      
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      
+      // Close modal on background click
+      modal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    
+    const allProgressContent = document.getElementById('allProgressContent');
+    if (!allProgressContent) return;
+    
+    // Get all levels with progress
+    let levelsWithProgress = [];
+    
+    // Determine which data to use based on current page
+    let currentData;
+    
+    if (window.location.pathname.includes('pemonlist.html')) {
+      currentData = pemonData;
+    } else if (window.location.pathname.includes('impossiblelist.html')) {
+      currentData = impossibleData;
+    } else {
+      currentData = demonData;
+    }
+    
+    // Filter levels with progress
+    levelsWithProgress = currentData.filter(level => {
+      const id = level['ID Level'] || level['ID'] || '';
+      return levelProgress[id] !== undefined || completedLevels.includes(id);
+    }).map(level => {
+      const id = level['ID Level'] || level['ID'] || '';
+      const name = level['Level'] || level['Name'] || '';
+      const difficulty = level['Level Placement Opinion'] || level['Difficulty'] || '';
+      const progress = levelProgress[id] || 0;
+      const isCompleted = completedLevels.includes(id);
+      
+      return {
+        id,
+        name,
+        difficulty,
+        progress,
+        isCompleted
+      };
+    });
+    
+    // Sort by progress (highest first)
+    levelsWithProgress.sort((a, b) => b.progress - a.progress);
+    
+    allProgressContent.innerHTML = `
+      <div class="progress-overview">
+        <div class="progress-stat">
+          <div class="stat-value">${completedLevels.length}</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="progress-stat">
+          <div class="stat-value">${Object.keys(levelProgress).length}</div>
+          <div class="stat-label">In Progress</div>
+        </div>
+        <div class="progress-stat">
+          <div class="stat-value">${levelsWithProgress.length > 0 ? 
+            Math.round(levelsWithProgress.reduce((acc, level) => acc + level.progress, 0) / levelsWithProgress.length) : 0}%</div>
+          <div class="stat-label">Average Progress</div>
+        </div>
+      </div>
+      <div class="progress-list">
+        ${levelsWithProgress.length > 0 ? 
+          levelsWithProgress.map(level => `
+            <div class="progress-item ${level.isCompleted ? 'completed' : ''}">
+              <div class="progress-info">
+                <div class="progress-name">${level.name}</div>
+                <div class="progress-difficulty">
+                  <span class="diff-pill ${level.difficulty.toLowerCase()}">${level.difficulty}</span>
+                </div>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${level.progress}%"></div>
+                </div>
+                <span class="progress-text">${level.progress}%</span>
+              </div>
+            </div>
+          `).join('') : 
+          '<div class="no-progress">No progress yet. Start playing some levels!</div>'
+        }
+      </div>
+    `;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Close sidebar
+    if (elements.sidebar) elements.sidebar.classList.remove('active');
+  }
+  
+  // Show recommendations
+  function showRecommendations() {
+    // Create recommendations modal if it doesn't exist
+    let modal = document.getElementById('recommendationsModal');
+    
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'recommendationsModal';
+      modal.className = 'modal';
+      
+      const modalContent = document.createElement('div');
+      modalContent.className = 'modal-content';
+      
+      const modalHeader = document.createElement('div');
+      modalHeader.className = 'modal-header';
+      
+      const modalTitle = document.createElement('h3');
+      modalTitle.className = 'modal-title';
+      modalTitle.textContent = 'Recommended For You';
+      
+      const modalClose = document.createElement('button');
+      modalClose.className = 'modal-close';
+      modalClose.innerHTML = '<i class="fas fa-times"></i>';
+      modalClose.addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      modalHeader.appendChild(modalTitle);
+      modalHeader.appendChild(modalClose);
+      
+      const modalBody = document.createElement('div');
+      modalBody.className = 'modal-body';
+      modalBody.id = 'recommendationsContent';
+      
+      modalContent.appendChild(modalHeader);
+      modalContent.appendChild(modalBody);
+      
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      
+      // Close modal on background click
+      modal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    
+    const recommendationsContent = document.getElementById('recommendationsContent');
+    if (!recommendationsContent) return;
+    
+    // Generate recommendations based on user preferences
+    const recommendations = generateRecommendations();
+    
+    recommendationsContent.innerHTML = `
+      <div class="recommendations-container">
+        <div class="recommendations-intro">
+          <p>Based on your play history and preferences, we think you'll enjoy these levels:</p>
+        </div>
+        <div class="recommendations-grid">
+          ${recommendations.map(level => {
+            const name = level['Level'] || level['Name'] || '';
+            const id = level['ID Level'] || level['ID'] || '';
+            const difficulty = level['Level Placement Opinion'] || level['Difficulty'] || '';
+            const videoUrl = level['Video Link'] || level['Video'] || '';
+            const videoId = getYouTubeId(videoUrl);
+            
+            return `
+              <div class="recommendation-card" data-id="${id}">
+                <div class="recommendation-rank">#${getCurrentRank(level)}</div>
+                ${videoId ? 
+                  `<img src="${getYouTubeThumbnail(videoId)}" alt="${name}" class="recommendation-thumb">` : 
+                  '<div class="recommendation-thumb no-thumb">No Video</div>'
+                }
+                <div class="recommendation-content">
+                  <div class="recommendation-title">${name}</div>
+                  <div class="recommendation-info">
+                    <span class="diff-pill ${difficulty.toLowerCase()}">${difficulty}</span>
+                  </div>
+                  <div class="recommendation-actions">
+                    <button class="recommendation-btn" onclick="DemonListApp.viewLevelDetails('${id}')">
+                      <i class="fas fa-info-circle"></i> Details
+                    </button>
+                    <button class="recommendation-btn" onclick="DemonListApp.playVideo('${videoId}')">
+                      <i class="fas fa-play"></i> Play
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // Generate recommendations based on user preferences
+  function generateRecommendations() {
+    // Determine which data to use based on current page
+    let currentData;
+    
+    if (window.location.pathname.includes('pemonlist.html')) {
+      currentData = pemonData;
+    } else if (window.location.pathname.includes('impossiblelist.html')) {
+      currentData = impossibleData;
+    } else {
+      currentData = demonData;
+    }
+    
+    // Filter out already completed levels
+    const uncompletedLevels = currentData.filter(level => {
+      const id = level['ID Level'] || level['ID'] || '';
+      return !completedLevels.includes(id);
+    });
+    
+    // If user has no history, return random levels
+    if (recentlyViewed.length === 0 && Object.keys(userRatings).length === 0) {
+      return uncompletedLevels
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 6);
+    }
+    
+    // Get user's preferred difficulties
+    const preferredDifficulties = {};
+    
+    // Analyze recently viewed levels
+    recentlyViewed.forEach(level => {
+      const difficulty = (level['Level Placement Opinion'] || level['Difficulty'] || '').toLowerCase();
+      if (difficulty) {
+        preferredDifficulties[difficulty] = (preferredDifficulties[difficulty] || 0) + 1;
+      }
+    });
+    
+    // Analyze rated levels
+    Object.keys(userRatings).forEach(id => {
+      const level = currentData.find(l => (l['ID Level'] || l['ID'] || '') === id);
+      if (level) {
+        const difficulty = (level['Level Placement Opinion'] || level['Difficulty'] || '').toLowerCase();
+        if (difficulty) {
+          // Give more weight to highly rated levels
+          const weight = userRatings[id] / 5;
+          preferredDifficulties[difficulty] = (preferredDifficulties[difficulty] || 0) + weight;
+        }
+      }
+    });
+    
+    // Sort difficulties by preference
+    const sortedDifficulties = Object.keys(preferredDifficulties)
+      .sort((a, b) => preferredDifficulties[b] - preferredDifficulties[a]);
+    
+    // Filter levels by preferred difficulties
+    let recommendedLevels = uncompletedLevels.filter(level => {
+      const difficulty = (level['Level Placement Opinion'] || level['Difficulty'] || '').toLowerCase();
+      return sortedDifficulties.includes(difficulty);
+    });
+    
+    // If not enough levels with preferred difficulties, add random ones
+    if (recommendedLevels.length < 6) {
+      const additionalLevels = uncompletedLevels
+        .filter(level => !recommendedLevels.includes(level))
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 6 - recommendedLevels.length);
+      
+      recommendedLevels = [...recommendedLevels, ...additionalLevels];
+    }
+    
+    // Sort by preferred difficulty first, then by rating
+    recommendedLevels.sort((a, b) => {
+      const aDifficulty = (a['Level Placement Opinion'] || a['Difficulty'] || '').toLowerCase();
+      const bDifficulty = (b['Level Placement Opinion'] || b['Difficulty'] || '').toLowerCase();
+      
+      const aPrefIndex = sortedDifficulties.indexOf(aDifficulty);
+      const bPrefIndex = sortedDifficulties.indexOf(bDifficulty);
+      
+      if (aPrefIndex !== bPrefIndex) {
+        return aPrefIndex - bPrefIndex;
+      }
+      
+      // If same preference, sort by rating
+      const aRating = parseFloat(a.Rating) || 0;
+      const bRating = parseFloat(b.Rating) || 0;
+      
+      return bRating - aRating;
+    });
+    
+    return recommendedLevels.slice(0, 6);
+  }
+  
+  // View level details from recommendation
+  function viewLevelDetails(id) {
+    // Determine which data to use based on current page
+    let currentData;
+    
+    if (window.location.pathname.includes('pemonlist.html')) {
+      currentData = pemonData;
+    } else if (window.location.pathname.includes('impossiblelist.html')) {
+      currentData = impossibleData;
+    } else {
+      currentData = demonData;
+    }
+    
+    const level = currentData.find(l => (l['ID Level'] || l['ID'] || '') === id);
+    if (level) {
+      // Close recommendations modal
+      const modal = document.getElementById('recommendationsModal');
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      
+      // Show level details
+      showLevelDetails(level);
+      addToRecentlyViewed(level);
+    }
+  }
+  
+  // Play video from recommendation
+  function playVideo(videoUrl) {
+    const videoId = getYouTubeId(videoUrl);
+    if (videoId) {
+      // Close recommendations modal
+      const modal = document.getElementById('recommendationsModal');
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      
+      // Open video modal
+      openModal(videoId);
+    }
   }
   
   // Get current rank of a level
@@ -1410,6 +2586,38 @@ const DemonListApp = (() => {
     if (!elements.detailsModal) return;
     
     elements.detailsModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  // Close rating modal
+  function closeRatingModalFn() {
+    if (!elements.ratingModal) return;
+    
+    elements.ratingModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  // Close statistics modal
+  function closeStatisticsModalFn() {
+    if (!elements.statisticsModal) return;
+    
+    elements.statisticsModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  // Close reviews modal
+  function closeReviewsModalFn() {
+    if (!elements.reviewsModal) return;
+    
+    elements.reviewsModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  // Close progress modal
+  function closeProgressModalFn() {
+    if (!elements.progressModal) return;
+    
+    elements.progressModal.classList.remove('active');
     document.body.style.overflow = '';
   }
   
@@ -1769,6 +2977,9 @@ const DemonListApp = (() => {
       const videoUrl = level['Video Link'] || level['Video'] || '';
       const videoId = getYouTubeId(videoUrl);
       const rating = level['Rating'] || 0;
+      const userRating = userRatings[id] || 0;
+      const progress = levelProgress[id] || 0;
+      const isCompleted = completedLevels.includes(id);
       
       const comparisonCard = document.createElement('div');
       comparisonCard.className = 'comparison-card';
@@ -1800,7 +3011,22 @@ const DemonListApp = (() => {
           <div class="comparison-detail">
             <div class="comparison-detail-label">Rating</div>
             <div class="comparison-detail-value">
-              ${generateStarRating(rating)}
+              ${userRating > 0 ? 
+                `<div>${generateStarRating(userRating)} <span class="rating-note">(Your rating)</span></div>` : 
+                generateStarRating(rating)
+              }
+            </div>
+          </div>
+          <div class="comparison-detail">
+            <div class="comparison-detail-label">Progress</div>
+            <div class="comparison-detail-value">
+              ${isCompleted ? 
+                '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Completed</span>' : 
+                progress > 0 ? 
+                  `<div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div>
+                   <span class="progress-text">${progress}%</span>` : 
+                  '<span style="color: var(--text-muted);">Not Started</span>'
+              }
             </div>
           </div>
           <div class="comparison-detail">
@@ -1831,12 +3057,15 @@ const DemonListApp = (() => {
       creator: level['Creators'] || level['Creator'],
       verifier: level['Display Nickname'] || level['Verifier'],
       difficulty: level['Level Placement Opinion'] || level['Difficulty'],
-      rating: level['Rating']
+      rating: level['Rating'],
+      userRating: userRatings[level['ID Level'] || level['ID']] || 0,
+      progress: levelProgress[level['ID Level'] || level['ID']] || 0,
+      completed: completedLevels.includes(level['ID Level'] || level['ID'])
     }));
     
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
     
     const a = document.createElement('a');
     a.href = url;
@@ -1845,6 +3074,70 @@ const DemonListApp = (() => {
     
     URL.revokeObjectURL(url);
     showToast('Comparison exported successfully', 'success');
+  }
+  
+  // Export data
+  function exportData() {
+    // Determine which data to use based on current page
+    let currentData;
+    let listType;
+    
+    if (window.location.pathname.includes('pemonlist.html')) {
+      currentData = pemonData;
+      listType = 'pemon';
+    } else if (window.location.pathname.includes('impossiblelist.html')) {
+      currentData = impossibleData;
+      listType = 'impossible';
+    } else {
+      currentData = demonData;
+      listType = 'demon';
+    }
+    
+    const data = currentData.map(level => ({
+      name: level['Level'] || level['Name'],
+      id: level['ID Level'] || level['ID'],
+      creator: level['Creators'] || level['Creator'],
+      verifier: level['Display Nickname'] || level['Verifier'],
+      difficulty: level['Level Placement Opinion'] || level['Difficulty'],
+      rating: level['Rating'],
+      tags: level['Tags'],
+      video: level['Video Link'] || level['Video'],
+      description: level['Description'],
+      length: level['Length'],
+      objects: level['Objects'],
+      downloads: level['Downloads']
+    }));
+    
+    const csv = convertToCSV(data);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${listType}-levels.csv`;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+    showToast('Data exported successfully', 'success');
+  }
+  
+  // Convert data to CSV
+  function convertToCSV(data) {
+    if (!data || data.length === 0) return '';
+    
+    const headers = Object.keys(data[0]);
+    const csvHeaders = headers.join(',');
+    
+    const csvRows = data.map(row => 
+      headers.map(header => {
+        const value = row[header] || '';
+        // Escape quotes and wrap in quotes if contains comma or quote
+        return value.includes(',') || value.includes('"') ? 
+          `"${value.replace(/"/g, '""')}"` : value;
+      }).join(',')
+    );
+    
+    return csvHeaders + '\n' + csvRows.join('\n');
   }
   
   // Toggle advanced filters
@@ -1863,6 +3156,10 @@ const DemonListApp = (() => {
     const hasVideo = document.getElementById('hasVideo')?.checked || false;
     const completedFilter = document.getElementById('completedFilter')?.value || 'all';
     const tagFilter = document.getElementById('tagFilter')?.value || '';
+    const minLength = document.getElementById('minLength')?.value || '';
+    const maxLength = document.getElementById('maxLength')?.value || '';
+    const minObjects = document.getElementById('minObjects')?.value || '';
+    const maxObjects = document.getElementById('maxObjects')?.value || '';
     
     // Determine which data to use based on current page
     let currentData;
@@ -1884,14 +3181,35 @@ const DemonListApp = (() => {
       const id = row['ID Level'] || row['ID'] || '';
       const isCompleted = completedLevels.includes(id);
       const tags = row['Tags'] ? row['Tags'].split(',').map(tag => tag.trim()) : [];
+      const length = row['Length'] || '';
+      const objects = parseInt(row['Objects']) || 0;
       
+      // Rating filter
       if (rating < minRating || rating > maxRating) return false;
+      
+      // Creator filter
       if (creatorFilter && !creator.toLowerCase().includes(creatorFilter.toLowerCase())) return false;
+      
+      // Verifier filter
       if (verifierFilter && !verifier.toLowerCase().includes(verifierFilter.toLowerCase())) return false;
+      
+      // Video filter
       if (hasVideo && !videoUrl) return false;
+      
+      // Completion filter
       if (completedFilter === 'completed' && !isCompleted) return false;
       if (completedFilter === 'not-completed' && isCompleted) return false;
+      
+      // Tag filter
       if (tagFilter && !tags.some(tag => tag.toLowerCase().includes(tagFilter.toLowerCase()))) return false;
+      
+      // Length filter
+      if (minLength && length < minLength) return false;
+      if (maxLength && length > maxLength) return false;
+      
+      // Objects filter
+      if (minObjects && objects < minObjects) return false;
+      if (maxObjects && objects > maxObjects) return false;
       
       return true;
     });
@@ -1915,6 +3233,10 @@ const DemonListApp = (() => {
     const hasVideo = document.getElementById('hasVideo');
     const completedFilter = document.getElementById('completedFilter');
     const tagFilter = document.getElementById('tagFilter');
+    const minLength = document.getElementById('minLength');
+    const maxLength = document.getElementById('maxLength');
+    const minObjects = document.getElementById('minObjects');
+    const maxObjects = document.getElementById('maxObjects');
     
     if (minRating) minRating.value = 0;
     if (maxRating) maxRating.value = 5;
@@ -1923,6 +3245,10 @@ const DemonListApp = (() => {
     if (hasVideo) hasVideo.checked = false;
     if (completedFilter) completedFilter.value = 'all';
     if (tagFilter) tagFilter.value = '';
+    if (minLength) minLength.value = '';
+    if (maxLength) maxLength.value = '';
+    if (minObjects) minObjects.value = '';
+    if (maxObjects) maxObjects.value = '';
     
     // Reset to default filters
     // Determine which data to use based on current page
@@ -2313,11 +3639,591 @@ const DemonListApp = (() => {
     retryLoading,
     loadCachedData,
     loadSampleData,
-    resetFilters
+    resetFilters,
+    viewLevelDetails,
+    playVideo
   };
 })();
 
 // Initialize the app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   DemonListApp.init();
+  
+  // Add CSS for new features
+  const additionalCSS = `
+    /* Rating Modal Styles */
+    .rating-input-stars {
+      font-size: 2rem;
+      color: var(--accent);
+      cursor: pointer;
+      margin: 1rem 0;
+    }
+    
+    .rating-input-stars i {
+      transition: var(--transition);
+    }
+    
+    .rating-input-stars i:hover {
+      transform: scale(1.1);
+    }
+    
+    .rating-note {
+      font-size: var(--font-sm);
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+    }
+    
+    .rating-comment-container {
+      margin-top: 1rem;
+    }
+    
+    .rating-comment-container label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .rating-comment-container textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      resize: vertical;
+      font-family: inherit;
+    }
+    
+    /* Progress Modal Styles */
+    .progress-input-container {
+      margin: 1rem 0;
+    }
+    
+    .progress-slider-container {
+      margin: 1rem 0;
+    }
+    
+    .progress-slider {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--surface-light);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    .progress-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+    }
+    
+    .progress-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      border: none;
+    }
+    
+    .progress-value {
+      font-weight: 600;
+      color: var(--primary);
+      margin-left: 1rem;
+    }
+    
+    .progress-notes-container {
+      margin-top: 1rem;
+    }
+    
+    .progress-notes-container label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .progress-notes-container textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      resize: vertical;
+      font-family: inherit;
+    }
+    
+    /* Statistics Modal Styles */
+    .statistics-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .stat-card {
+      background: var(--surface-light);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: var(--font-xl);
+    }
+    
+    .stat-info {
+      flex: 1;
+    }
+    
+    .stat-value {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--text);
+    }
+    
+    .stat-label {
+      font-size: var(--font-sm);
+      color: var(--text-muted);
+    }
+    
+    .rating-distribution {
+      margin-top: var(--space-lg);
+    }
+    
+    .rating-distribution h4 {
+      margin-bottom: var(--space-md);
+      color: var(--text);
+    }
+    
+    .rating-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .rating-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .rating-bar-container {
+      flex: 1;
+      height: 20px;
+      background: var(--surface);
+      border-radius: var(--radius-xs);
+      overflow: hidden;
+    }
+    
+    .rating-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    
+    .rating-count {
+      min-width: 30px;
+      text-align: right;
+      font-weight: 600;
+    }
+    
+    /* Reviews Modal Styles */
+    .reviews-container {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .review-card {
+      background: var(--surface-light);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-sm);
+    }
+    
+    .reviewer-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .reviewer-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+    
+    .reviewer-details {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .reviewer-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .review-date {
+      font-size: var(--font-xs);
+      color: var(--text-muted);
+    }
+    
+    .review-rating {
+      color: var(--accent);
+    }
+    
+    .review-comment {
+      color: var(--text);
+      line-height: 1.5;
+    }
+    
+    .no-reviews {
+      text-align: center;
+      color: var(--text-muted);
+      padding: var(--space-lg);
+    }
+    
+    /* Achievements Modal Styles */
+    .achievements-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+    
+    .achievement-stats {
+      display: flex;
+      justify-content: space-around;
+      gap: var(--space-md);
+    }
+    
+    .achievement-stat {
+      text-align: center;
+    }
+    
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-md);
+    }
+    
+    .achievement-card {
+      background: var(--surface-light);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      transition: var(--transition);
+    }
+    
+    .achievement-card.unlocked {
+      border: 2px solid var(--success);
+    }
+    
+    .achievement-card.locked {
+      opacity: 0.6;
+      filter: grayscale(100%);
+    }
+    
+    .achievement-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: var(--font-2xl);
+    }
+    
+    .achievement-card.unlocked .achievement-icon {
+      background: var(--success);
+      color: white;
+    }
+    
+    .achievement-info {
+      flex: 1;
+    }
+    
+    .achievement-title {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    
+    .achievement-description {
+      font-size: var(--font-sm);
+      color: var(--text-muted);
+    }
+    
+    .achievement-status {
+      font-size: var(--font-sm);
+      font-weight: 500;
+    }
+    
+    .achievement-card.unlocked .achievement-status {
+      color: var(--success);
+    }
+    
+    .achievement-card.locked .achievement-status {
+      color: var(--text-muted);
+    }
+    
+    /* Progress Modal Styles */
+    .progress-overview {
+      display: flex;
+      justify-content: space-around;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .progress-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .progress-item {
+      background: var(--surface-light);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    
+    .progress-item.completed {
+      border: 2px solid var(--success);
+    }
+    
+    .progress-info {
+      flex: 1;
+    }
+    
+    .progress-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    
+    .progress-difficulty {
+      margin-bottom: 0.5rem;
+    }
+    
+    .progress-bar-container {
+      flex: 1;
+      max-width: 200px;
+    }
+    
+    .no-progress {
+      text-align: center;
+      color: var(--text-muted);
+      padding: var(--space-lg);
+    }
+    
+    /* Recommendations Modal Styles */
+    .recommendations-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+    
+    .recommendations-intro {
+      text-align: center;
+      color: var(--text-muted);
+    }
+    
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-md);
+    }
+    
+    .recommendation-card {
+      background: var(--surface-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .recommendation-rank {
+      position: absolute;
+      top: var(--space-sm);
+      left: var(--space-sm);
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: var(--font-sm);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    
+    .recommendation-thumb {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    
+    .recommendation-thumb.no-thumb {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      background: var(--surface);
+    }
+    
+    .recommendation-content {
+      padding: var(--space-md);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    
+    .recommendation-title {
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .recommendation-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .recommendation-actions {
+      display: flex;
+      gap: var(--space-sm);
+      margin-top: auto;
+    }
+    
+    .recommendation-btn {
+      flex: 1;
+      padding: 0.5rem;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: var(--font-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .recommendation-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Search Suggestions Styles */
+    .search-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--surface-light);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 100;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .suggestion-title {
+      padding: var(--space-sm);
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--surface-light);
+    }
+    
+    .suggestion-item {
+      padding: var(--space-sm) var(--space-md);
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 1px solid var(--surface-light);
+    }
+    
+    .suggestion-item:hover {
+      background: var(--surface-light);
+      color: var(--primary);
+    }
+    
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+    
+    /* Card Progress Styles */
+    .card-progress {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 1.3rem;
+      right: 1.3rem;
+      z-index: 2;
+    }
+    
+    .card-progress .progress-bar {
+      height: 4px;
+      background: var(--surface);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 0.25rem;
+    }
+    
+    .card-progress .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .card-progress .progress-text {
+      font-size: var(--font-xs);
+      color: var(--text-muted);
+    }
+  `;
+  
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = additionalCSS;
+  document.head.appendChild(styleSheet);
 });
