@@ -1,5 +1,5 @@
 /**
- * FrGDPS Demon List - Enhanced JavaScript
+ * GDIPS Demon List - Enhanced JavaScript
  * A comprehensive demon list viewer with filtering, sorting, and user profiles
  */
 
@@ -32,8 +32,8 @@ const DemonListApp = (() => {
   // Data sources configuration
   const DATA_SOURCES = {
     demonlist: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDN7HUdFLEi7P5CkSFXFz_b16Os_8hdEItayViA0TfNze8nudO6sxlJgL9h2K8gkYMQah6RS1KXvL2/pub?gid=1550981254&single=true&output=csv',
-    pemonlist: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDN7HUdFLEi7P5CkSFXFz_b16Os_8hdEItayViA0TfNze8nudO6sxlJgL9h2K8gkYMQah6RS1KXvL2/pub?gid=1550981255&single=true&output=csv',
-    impossiblelist: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDN7HUdFLEi7P5CkSFXFz_b16Os_8hdEItayViA0TfNze8nudO6sxlJgL9h2K8gkYMQah6RS1KXvL2/pub?gid=1550981256&single=true&output=csv'
+    pemonlist: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRULqi0QRDR6gfQo8P2bfqpcqnnZJSkD1ZT-D2XiF7urmzvLwcf10L85KSVp20q65AkMjsha6Lg2LIQ/pub?output=csv',
+    impossiblelist: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ4iVSl1wTRfOZwLAoyZF-ej_Be2LCgtpXnHgswXbZJczu1EXvrWsGvffpPtAtWxx6-XlOcGsgaHDLo/pub?output=csv'
   };
   
   // Achievement definitions

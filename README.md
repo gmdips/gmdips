@@ -64,7 +64,7 @@
 ### Connect With Us
 [![WhatsApp](https://img.shields.io/badge/WhatsApp_Group-ffffff?logo=whatsapp)](https://chat.whatsapp.com/Fmh5DoSjbWkBje0ab3RAEF)
 [![Discord](https://img.shields.io/badge/Discord-ffffff?logo=discord)](https://discord.gg/YyeZ2Sxjgf)
-[![Reddit](https://img.shields.io/badge/Subreddit-ffffff?logo=reddit)](https://www.reddit.com/r/FrGDPS)
+[![Reddit](https://img.shields.io/badge/Subreddit-ffffff?logo=reddit)](https://www.reddit.com/r/GDIPS)
 
 ---
 
@@ -107,11 +107,11 @@
 
 ## Star History
 
-<a href="https://www.star-history.com/#flessan/frgdps&type=date&legend=top-left">
+<a href="https://www.star-history.com/#flessan/GDIPS&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=flessan/frgdps&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=flessan/frgdps&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=flessan/frgdps&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=flessan/GDIPS&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=flessan/GDIPS&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=flessan/GDIPS&type=date&legend=top-left" />
  </picture>
 </a>
 
