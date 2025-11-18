@@ -330,6 +330,7 @@
       border-top: 1px solid rgba(255,255,255,0.05);
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body>
   <header>
@@ -389,7 +390,6 @@
   </footer>
 
   <script>
-    // Hamburger toggle
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mainNav = document.getElementById('mainNav');
     hamburgerBtn.addEventListener('click', function() {
@@ -397,8 +397,6 @@
       this.classList.toggle('open');
       this.setAttribute('aria-expanded', mainNav.classList.contains('active'));
     });
-
-    // Close nav on link click (mobile)
     mainNav.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
@@ -408,60 +406,62 @@
         }
       });
     });
-
-    // CSV parsing & search
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4lg62rVOAXsMSWM38OXt5bWUJjWpJSoqmO7AgkYO3ABorCaKGYmC3R6pHqBGgzQ49KNQngzvUl3Aa/pub?gid=0&single=true&output=csv';
     const tableBody = document.getElementById('tableBody');
     const searchInput = document.getElementById('searchInput');
     let allRows = [];
-
-    // Medal for top 3
     function getMedal(rank) {
-      switch (rank) {
-        case "1": return `<span class="rank-medal rank-1" title="1st">&#x1F947;</span>`; // gold medal
-        case "2": return `<span class="rank-medal rank-2" title="2nd">&#x1F948;</span>`; // silver medal
-        case "3": return `<span class="rank-medal rank-3" title="3rd">&#x1F949;</span>`; // bronze medal
+      switch (String(rank)) {
+        case '1': return `<span class="rank-medal rank-1" title="1st">&#x1F947;</span>`;
+        case '2': return `<span class="rank-medal rank-2" title="2nd">&#x1F948;</span>`;
+        case '3': return `<span class="rank-medal rank-3" title="3rd">&#x1F949;</span>`;
         default: return rank;
       }
     }
-
-    function renderRows(filteredRows) {
+    function renderRows(rows) {
       tableBody.innerHTML = '';
-      if (filteredRows.length === 0) {
+      if (!rows.length) {
         tableBody.innerHTML = '<tr><td colspan="6">No players found.</td></tr>';
         return;
       }
-      filteredRows.forEach(([rank, player, points, demons, cp, record], idx) => {
+      rows.forEach(r => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${getMedal(rank)}</td>
-          <td>${player}</td>
-          <td>${points}</td>
-          <td>${demons}</td>
-          <td>${cp}</td>
-          <td>${record}</td>
+          <td>${getMedal(r.rank)}</td>
+          <td>${r.player}</td>
+          <td>${r.points}</td>
+          <td>${r.demons}</td>
+          <td>${r.cp}</td>
+          <td>${r.record}</td>
         `;
         tableBody.appendChild(tr);
       });
     }
-
     function filterRows(query) {
       if (!query) return allRows;
       const q = query.trim().toLowerCase();
-      return allRows.filter(row => row[1].toLowerCase().includes(q));
+      return allRows.filter(r => String(r.player).toLowerCase().includes(q));
     }
-
-    fetch(csvUrl)
-      .then(r => r.text())
-      .then(txt => {
-        const [, ...lines] = txt.trim().split('\n');
-        allRows = lines.map(line => line.split(','));
+    Papa.parse(csvUrl, {
+      download: true,
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+      complete: res => {
+        allRows = res.data.map(d => ({
+          rank: d['#'] || d['Rank'] || d['rank'] || d['Position'] || '',
+          player: d['Player'] || d['Name'] || '',
+          points: d['Points'] || d['Score'] || '',
+          demons: d['Demons'] || d['Completed'] || '',
+          cp: d['CP'] || d['Cap'] || '',
+          record: d['Last Record'] || d['Record'] || ''
+        })).filter(r => r.player);
         renderRows(allRows);
-      })
-      .catch(() => {
+      },
+      error: () => {
         tableBody.innerHTML = '<tr><td colspan="6">Failed to load data.</td></tr>';
-      });
-
+      }
+    });
     searchInput.addEventListener('input', e => {
       renderRows(filterRows(e.target.value));
     });

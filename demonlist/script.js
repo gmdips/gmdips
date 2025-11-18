@@ -19,7 +19,7 @@ const DemonListApp = (() => {
   let searchHistory = [];
   let communityReviews = {};
   let currentPage = 1;
-  const ITEMS_PER_PAGE = 12;
+  let ITEMS_PER_PAGE = parseInt(localStorage.getItem('pageSize')) || 12;
   let currentSort = 'rank';
   let currentFilter = 'all';
   let viewMode = 'grid';
@@ -3633,7 +3633,58 @@ const DemonListApp = (() => {
     };
   }
   
-  // Public API
+  function showSettingsModal() {
+    let modal = document.getElementById('settingsModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'settingsModal';
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Settings</h3>
+            <button class="modal-close" id="closeSettings"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="modal-body">
+            <div class="filter-group">
+              <label for="settingsPageSize">Items Per Page</label>
+              <select id="settingsPageSize">
+                <option value="6">6</option>
+                <option value="12">12</option>
+                <option value="24">24</option>
+                <option value="48">48</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Theme</label>
+              <div style="display:flex;gap:.5rem;">
+                <button id="themeLight" class="modal-btn">Light</button>
+                <button id="themeDark" class="modal-btn">Dark</button>
+              </div>
+            </div>
+            <div class="filter-group">
+              <button id="clearData" class="modal-btn modal-btn-secondary">Clear Saved Data</button>
+            </div>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+      const pageSizeSel = modal.querySelector('#settingsPageSize');
+      pageSizeSel.value = String(ITEMS_PER_PAGE);
+      pageSizeSel.addEventListener('change', e => setPageSize(e.target.value));
+      modal.querySelector('#themeLight').addEventListener('click', () => { document.documentElement.setAttribute('data-theme', 'light'); localStorage.setItem('theme', 'light'); });
+      modal.querySelector('#themeDark').addEventListener('click', () => { document.documentElement.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); });
+      modal.querySelector('#clearData').addEventListener('click', () => { localStorage.clear(); showToast('Saved data cleared', 'success'); });
+      modal.querySelector('#closeSettings').addEventListener('click', () => hideModal(modal));
+    }
+    showModal(modal);
+  }
+  function setPageSize(size) {
+    ITEMS_PER_PAGE = parseInt(size) || 12;
+    localStorage.setItem('pageSize', ITEMS_PER_PAGE);
+    currentPage = 1;
+    renderCards();
+    renderPagination();
+  }
   return {
     init,
     retryLoading,
@@ -3641,7 +3692,11 @@ const DemonListApp = (() => {
     loadSampleData,
     resetFilters,
     viewLevelDetails,
-    playVideo
+    playVideo,
+    exportData,
+    exportComparison,
+    showSettingsModal,
+    setPageSize
   };
 })();
 

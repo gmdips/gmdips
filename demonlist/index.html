@@ -208,6 +208,9 @@
         <button class="action-btn" id="compareBtn">
           <i class="fas fa-balance-scale"></i> Compare
         </button>
+        <button class="action-btn" id="recommendationsBtn">
+          <i class="fas fa-thumbs-up"></i> Recommendations
+        </button>
       </div>
     </div>
     
@@ -256,6 +259,22 @@
             <option value="completed">Completed</option>
             <option value="not-completed">Not Completed</option>
           </select>
+        </div>
+        <div class="filter-group">
+          <label for="minLength">Min Length</label>
+          <input type="text" id="minLength" placeholder="e.g., 1m 30s">
+        </div>
+        <div class="filter-group">
+          <label for="maxLength">Max Length</label>
+          <input type="text" id="maxLength" placeholder="e.g., 3m 0s">
+        </div>
+        <div class="filter-group">
+          <label for="minObjects">Min Objects</label>
+          <input type="number" id="minObjects" placeholder="e.g., 10000">
+        </div>
+        <div class="filter-group">
+          <label for="maxObjects">Max Objects</label>
+          <input type="number" id="maxObjects" placeholder="e.g., 50000">
         </div>
         <div class="filter-group">
           <label for="itemsPerPage">Items Per Page</label>
@@ -341,8 +360,54 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="modal-btn modal-btn-primary" onclick="exportComparison()">Export Comparison</button>
+        <button class="modal-btn modal-btn-primary" onclick="DemonListApp.exportComparison()">Export Comparison</button>
         <button class="modal-btn modal-btn-secondary" onclick="document.getElementById('compareModal').classList.remove('active'); document.body.style.overflow = '';">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="ratingModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="ratingModalTitle">Rate Level</h3>
+        <button class="modal-close" id="closeRatingModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="ratingContent"></div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-primary" id="submitRating"><i class="fas fa-check"></i> Submit</button>
+      </div>
+    </div>
+  </div>
+  <div id="statisticsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="statisticsModalTitle">Statistics</h3>
+        <button class="modal-close" id="closeStatisticsModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="statisticsContent"></div>
+    </div>
+  </div>
+  <div id="reviewsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="reviewsModalTitle">Reviews</h3>
+        <button class="modal-close" id="closeReviewsModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="reviewsContent"></div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-primary" id="addReview"><i class="fas fa-plus"></i> Add Review</button>
+      </div>
+    </div>
+  </div>
+  <div id="progressModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="progressModalTitle">Progress</h3>
+        <button class="modal-close" id="closeProgressModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="progressContent"></div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-primary" id="updateProgress"><i class="fas fa-save"></i> Save</button>
       </div>
     </div>
   </div>
@@ -375,27 +440,23 @@
   <script src="script.js"></script>
   <script>
     // Export functionality
-    document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('exportBtn').addEventListener('click', () => DemonListApp.exportData());
     
     // Items per page change
     document.getElementById('itemsPerPage').addEventListener('change', (e) => {
-      ITEMS_PER_PAGE = parseInt(e.target.value);
-      localStorage.setItem('pageSize', ITEMS_PER_PAGE);
-      CURRENT_PAGE = 1;
-      renderCards();
-      renderPagination();
+      DemonListApp.setPageSize(e.target.value);
     });
     
     // Achievements link
     document.getElementById('achievementsLink').addEventListener('click', (e) => {
       e.preventDefault();
-      showAchievementsModal();
+      DemonListApp.showAchievements();
     });
     
     // Settings link
     document.getElementById('settingsLink').addEventListener('click', (e) => {
       e.preventDefault();
-      showSettingsModal();
+      DemonListApp.showSettingsModal();
     });
     
     // Update username display
