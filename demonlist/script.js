@@ -110,6 +110,7 @@ const DemonListApp = (() => {
     loadUserData();
     initializeEventListeners();
     loadData();
+    updateUserProfile();
     checkAchievements();
     updateYear();
     initializeTheme();
@@ -597,7 +598,8 @@ const DemonListApp = (() => {
       if (!response.ok) throw new Error('Network response was not ok');
       
       const csvText = await response.text();
-      const parsedData = await parseCSV(csvText);
+      const sanitized = preprocessCSVText(csvText);
+      const parsedData = await parseCSV(sanitized);
       
       const validData = parsedData.filter(r => {
         const levelName = r.Level || r.Name || '';
@@ -647,10 +649,24 @@ const DemonListApp = (() => {
     return new Promise((resolve, reject) => {
       Papa.parse(csvText, {
         header: true,
+        skipEmptyLines: true,
+        dynamicTyping: true,
+        transformHeader: h => (h || '').replace(/^\uFEFF/, '').trim(),
         complete: results => resolve(results.data),
         error: reject
       });
     });
+  }
+
+  function preprocessCSVText(text) {
+    if (!text) return '';
+    let t = String(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    t = t.replace(/`([^`]*)`/g, (m, p1) => {
+      const cleaned = p1.replace(/,\s*$/,'').trim();
+      const escaped = cleaned.replace(/"/g, '""');
+      return '"' + escaped + '"';
+    });
+    return t;
   }
   
   // Handle data loading errors

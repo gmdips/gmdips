@@ -459,22 +459,6 @@
       DemonListApp.showSettingsModal();
     });
     
-    // Update username display
-    const usernameDisplay = document.getElementById('usernameDisplay');
-    const userLevel = document.getElementById('userLevel');
-    const userExperience = document.getElementById('userExperience');
-    
-    if (usernameDisplay && USER_PROFILE.username !== 'Guest') {
-      usernameDisplay.textContent = USER_PROFILE.username;
-    }
-    
-    if (userLevel) {
-      userLevel.textContent = USER_PROFILE.level;
-    }
-    
-    if (userExperience) {
-      userExperience.textContent = USER_PROFILE.experience;
-    }
   </script>
 </body>
 </html>

@@ -24,70 +24,49 @@ body {
 
 /* ===== DESIGN TOKENS & CUSTOM PROPERTIES ===== */
 :root {
-  /* Color Palette */
-  --primary: #ff4b6b;
-  --primary-dark: #c51f3b;
-  --primary-light: #ff6b8b;
-  --secondary: #7c4dff;
-  --accent: #ffe47a;
-  --success: #4caf50;
-  --warning: #ff9800;
-  --error: #f44336;
-  --info: #2196f3;
-  
-  /* Background Colors */
-  --bg: #161922;
-  --glass: rgba(27,29,36,0.73);
-  --glass-light: rgba(36,39,53,0.94);
-  --surface: #222632;
-  --surface-light: #282d3b;
-  
-  /* Text Colors */
-  --text: #f7f7fa;
-  --text-muted: #a2a2b3;
-  
-  /* Border Radius */
-  --radius: 18px;
-  --radius-sm: 12px;
-  --radius-xs: 6px;
-  
-  /* Shadows */
-  --shadow: 0 8px 40px 0 #0b0b0c2e;
-  --shadow-hover: 0 12px 25px rgba(0, 0, 0, 0.15);
-  
-  /* Spacing Scale */
+  --primary: #ff6bd6;
+  --primary-dark: #e65abf;
+  --primary-light: #ffa3e6;
+  --secondary: #7ae1ff;
+  --accent: #ffe066;
+  --success: #48d597;
+  --warning: #ffb84d;
+  --error: #ff5f6d;
+  --info: #41c2ff;
+  --bg: #12151d;
+  --glass: rgba(22,24,33,0.75);
+  --glass-light: rgba(30,34,46,0.95);
+  --surface: #1c2030;
+  --surface-light: #262b3e;
+  --text: #f8f9fb;
+  --text-muted: #a8afc2;
+  --radius: 22px;
+  --radius-sm: 16px;
+  --radius-xs: 10px;
+  --shadow: 0 14px 40px rgba(0,0,0,0.35);
+  --shadow-hover: 0 18px 50px rgba(0,0,0,0.45);
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;
   --space-lg: 2rem;
   --space-xl: 3rem;
-  
-  /* Typography Scale */
-  --font-xs: 0.85rem;
-  --font-sm: 0.9rem;
-  --font-base: 1rem;
-  --font-lg: 1.2rem;
-  --font-xl: 1.5rem;
-  --font-2xl: 2rem;
-  --font-3xl: 2.8rem;
-  
-  /* Transitions */
-  --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --transition-fast: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  
-  /* Layout */
-  --grid-gap: 2.2rem;
-  --card-max: 370px;
-  
-  /* Difficulty Colors */
-  --easy: #4caf50;
-  --medium: #ff9800;
-  --hard: #f44336;
-  --insane: #9c27b0;
-  --extreme: #2196f3;
-  --impossible: #ff1744;
-  
-  /* Responsive Breakpoints */
+  --font-xs: 0.9rem;
+  --font-sm: 1rem;
+  --font-base: 1.05rem;
+  --font-lg: 1.25rem;
+  --font-xl: 1.6rem;
+  --font-2xl: 2.2rem;
+  --font-3xl: 3rem;
+  --transition: all 0.28s cubic-bezier(.2,.8,.2,1);
+  --transition-fast: all 0.18s cubic-bezier(.2,.8,.2,1);
+  --grid-gap: 1.2rem;
+  --card-max: 330px;
+  --easy: #4fd180;
+  --medium: #ffb74d;
+  --hard: #ff6f61;
+  --insane: #b47ae0;
+  --extreme: #3aa3ff;
+  --impossible: #ff3b6e;
   --breakpoint-sm: 600px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1020px;
@@ -204,9 +183,9 @@ main {
 
 /* ===== HEADER ===== */
 header {
-  backdrop-filter: blur(10px);
-  background: var(--glass-light);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: saturate(140%) blur(10px);
+  background: linear-gradient(90deg, rgba(255,107,214,0.25), rgba(122,225,255,0.18)), var(--glass-light);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   position: sticky;
   top: 0;
   left: 0;
@@ -234,7 +213,7 @@ header {
   font-size: 1.55rem;
   letter-spacing: -1px;
   color: var(--primary);
-  text-shadow: 0 1px 8px rgba(255, 75, 107, 0.2);
+  text-shadow: 0 2px 10px rgba(255, 107, 214, 0.3);
   cursor: pointer;
   user-select: none;
   transition: var(--transition);
@@ -271,12 +250,12 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface-light);
+  background: linear-gradient(135deg, var(--surface-light), rgba(255,255,255,0.05));
   border-radius: 50%;
   border: none;
   color: var(--primary);
   font-size: 1.2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
   cursor: pointer;
   transition: var(--transition);
 }
@@ -304,15 +283,16 @@ header {
 }
 
 .tab-nav-item {
-  padding: var(--space-sm) 1.5rem;
+  padding: 0.9rem 1.3rem;
   color: var(--text-muted);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   position: relative;
   transition: var(--transition);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  border-radius: 999px;
 }
 
 .tab-nav-item:hover {
@@ -321,6 +301,7 @@ header {
 
 .tab-nav-item.active {
   color: var(--primary);
+  background: rgba(255,107,214,0.14);
 }
 
 .tab-nav-item.active::after {
@@ -813,16 +794,17 @@ header {
 .action-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.2rem;
-  background: var(--primary);
+  gap: 0.6rem;
+  padding: 0.9rem 1.4rem;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
   border: none;
-  border-radius: 24px;
+  border-radius: 999px;
   color: #fff;
   font-size: var(--font-sm);
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
+  box-shadow: 0 12px 24px rgba(255,107,214,0.25);
 }
 
 .action-btn:hover {
@@ -925,14 +907,14 @@ header {
 }
 
 .demon-card {
-  background: var(--glass);
+  background: linear-gradient(180deg, rgba(122,225,255,0.08), rgba(255,107,214,0.08)) , var(--glass);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: var(--transition);
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
   min-width: 0;
   min-height: 320px;
   position: relative;
@@ -944,8 +926,8 @@ header {
 }
 
 .demon-card:hover {
-  transform: translateY(-7px) scale(1.02);
-  box-shadow: 0 8px 32px rgba(255, 75, 107, 0.2), var(--shadow);
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 18px 40px rgba(255, 107, 214, 0.18), var(--shadow-hover);
   z-index: 2;
 }
 
@@ -1237,17 +1219,17 @@ header {
 }
 
 .card-action-btn {
-  padding: 0.5rem var(--space-sm);
-  background: var(--surface-light);
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, var(--surface-light), rgba(255,255,255,0.04));
   border: none;
-  border-radius: 20px;
+  border-radius: 999px;
   color: var(--text);
   font-size: var(--font-sm);
   cursor: pointer;
   transition: var(--transition);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .card-action-btn:hover {
@@ -2620,8 +2602,25 @@ footer {
   }
   
   .header-bar {
-    padding: var(--space-sm);
+    padding: 0.8rem 3vw;
   }
+  .tab-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--glass-light);
+    border-top: 1px solid var(--surface-light);
+    padding: 0.3rem 0.4rem;
+    justify-content: space-around;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .tab-nav-item {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+  }
+  main { padding-bottom: 72px; }
   
   .page-header h2 {
     font-size: var(--font-2xl);
