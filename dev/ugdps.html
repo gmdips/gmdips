@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Upsilon GDPS | Main</title>
+  <meta name="description" content="Upsilon GDPS • Experience GDPS server with extra features, tools, and everything." />
+  <link rel="icon" href="/dashboard/icon.png" />
+  <meta name="theme-color" content="#ff69b4" />
+  <meta property="og:title" content="Upsilon GDPS | Main" />
+  <meta property="og:description" content="Experience GDPS server focused on your dream with more features. Join to help Upsilon GDPS and make more better!" />
+  <meta property="og:image" content="https://nahhhh.ps.fhgdps.com/dashboard/icon.png" />
+  <meta property="og:type" content="website" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#ff69b4; --primary-2:#ff85c2; --secondary:#ff4da6; --accent:#ff9bd1;
+      --bg:#0b0710; --bg-2:#120617; --card:#121024; --glass:rgba(26,12,36,.55);
+      --text:#f4eef8; --muted:#d7cbe0; --success:#22c55e; --danger:#ff4d6d;
+      --border:rgba(255,105,180,.20); --radius:14px; --shadow:0 12px 36px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;color:var(--text);background:radial-gradient(1200px 600px at 10% 0%, rgba(255,105,180,.12), transparent 60%), radial-gradient(900px 700px at 90% 100%, rgba(255,155,209,.06), transparent 60%), linear-gradient(180deg, var(--bg), var(--bg-2));}
+    a{color:inherit}
+    img{max-width:100%;display:block}
+
+    .wrap{max-width:1100px;margin:0 auto;padding:20px 20px 32px}
+
+    /* HEADER / HERO */
+    header.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 0 12px}
+    .logo-wrap{position:relative;display:inline-grid;place-items:center;margin-bottom:18px;perspective:900px}
+    .logo-ring{width:140px;height:140px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 180deg, var(--primary), var(--secondary), var(--primary-2));box-shadow:0 18px 40px rgba(255,105,180,.28), inset 0 0 22px rgba(255,255,255,.03);border:3px solid rgba(255,255,255,.08);animation:float 4s ease-in-out infinite, spin 18s linear infinite;transition:transform .4s ease}
+    .logo-ring:hover{transform:rotateY(10deg) rotateX(6deg) scale(1.05)}
+    .logo-ring img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.16);filter:drop-shadow(0 8px 26px rgba(0,0,0,.45))}
+    .glow{position:absolute;inset:-18px;border-radius:50%;background:radial-gradient(closest-side, rgba(255,105,180,.36), transparent 70%);filter:blur(8px);z-index:-1;animation:pulse 3s ease-in-out infinite}
+
+    h1.title{font-size:clamp(1.8rem,2.8vw,2.6rem);letter-spacing:.5px;margin:8px 0 6px;background:linear-gradient(90deg,var(--primary),var(--accent),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+    p.tagline{max-width:720px;margin:0 auto 14px;color:var(--muted)}
+
+    .status{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:999px;background:var(--glass);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
+    .dot{width:12px;height:12px;border-radius:50%;background:var(--success);box-shadow:0 0 16px rgba(34,197,94,.5);animation:breath 1.8s ease-in-out infinite}
+
+    /* GRID */
+    .grid{display:grid;gap:22px;margin-top:26px;grid-template-columns:repeat(12,1fr)}
+    .card{grid-column:span 12;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;position:relative;overflow:hidden}
+    .card:before{content:"";position:absolute;inset:-40% -60% auto auto;width:120%;height:120%;background:radial-gradient(closest-side, rgba(255,105,180,.12), transparent 70%);z-index:-1}
+    .card h2{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:var(--accent);font-size:1.1rem;letter-spacing:.3px}
+    .card h2 i{font-size:1.2rem}
+
+    @media (min-width:720px){.span-6{grid-column:span 6}.span-4{grid-column:span 4}.span-8{grid-column:span 8}}
+
+    /* INPUT / BUTTONS */
+    .input{position:relative;border:1px solid var(--border);border-radius:12px;background:rgba(20,12,30,.55);display:flex;align-items:center;padding:6px 10px}
+    .input i{opacity:.95;color:var(--accent);margin-right:8px}
+    .input input{flex:1;padding:10px 8px;background:transparent;border:0;color:var(--text);font-size:.98rem;outline:none}
+
+    .btn{display:inline-flex;align-items:center;gap:10px;justify-content:center;width:100%;padding:12px 14px;border-radius:12px;border:0;color:#071023;background:linear-gradient(135deg,var(--primary),var(--primary-2));font-weight:800;letter-spacing:.2px;text-decoration:none;box-shadow:0 10px 26px rgba(255,105,180,.18);transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;position:relative;overflow:hidden}
+    .btn:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 20px 48px rgba(255,105,180,.22);filter:brightness(1.02)}
+    .btn:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);transform:translateX(-100%);transition:transform .6s ease}
+    .btn:hover:after{transform:translateX(100%)}
+    .btn i{width:22px;text-align:center}
+    .btn.outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+
+    /* LIST / LOG */
+    .log{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+    .date{min-width:96px;text-align:center;font-weight:700;color:#fff;border-radius:10px;padding:6px 10px;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 4px 14px rgba(255,105,180,.18)}
+
+    /* SOCIAL */
+    .social{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px}
+    .sbtn{display:grid;place-items:center;gap:8px;padding:16px 10px;border-radius:14px;text-decoration:none;color:var(--text);border:1px solid var(--border);background:rgba(255,105,180,.06);backdrop-filter:blur(6px);transition:transform .18s ease, box-shadow .18s ease}
+    .sbtn i{font-size:1.6rem;background:linear-gradient(180deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .sbtn:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(255,105,180,.12)}
+
+    footer{margin-top:28px;padding:28px 0;border-top:1px solid var(--border);text-align:center;color:var(--muted)}
+    .flinks{display:flex;gap:18px;justify-content:center;margin:10px 0 6px}
+    .flinks a{font-size:1.2rem;color:var(--accent)}
+
+    /* TOAST */
+    .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);opacity:0;z-index:1000;background:var(--glass);border:1px solid rgba(255,105,180,.12);color:var(--text);padding:14px 18px;border-radius:14px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;backdrop-filter:blur(10px);transition:transform .35s ease, opacity .35s ease}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* MOTION SAFE */
+    @media (prefers-reduced-motion: reduce){
+      .logo-ring{animation:none}
+      .glow{animation:none}
+      .toast{transition:none}
+    }
+
+    /* KEYFRAMES */
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    @keyframes spin{to{transform:rotate(1turn)}}
+    @keyframes pulse{0%{opacity:.6;transform:scale(.96)}100%{opacity:1;transform:scale(1.04)}}
+    @keyframes breath{0%,100%{opacity:.8}50%{opacity:1}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="logo-wrap">
+        <div class="logo-ring"><img src="https://nahhhh.ps.fhgdps.com/dashboard/icon.png" alt="Upsilon GDPS Logo"></div>
+        <span class="glow" aria-hidden="true"></span>
+      </div>
+      <h1 class="title">Upsilon GDPS</h1>
+      <p class="tagline">Experience Geometry Dash Private Server focused on your dream.</p>
+      <div class="status" role="status" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <strong>Server Status:</strong>&nbsp;<span>Online</span>
+      </div>
+    </header>
+
+    <main class="grid" id="main">
+      <!-- DATABASE -->
+      <section class="card span-6" aria-labelledby="db-title">
+        <h2 id="db-title"><i class="fa-solid fa-database"></i> Upsilon GDPS Database</h2>
+        <label class="input" for="datLink">
+          <i class="fa-solid fa-link" aria-hidden="true"></i>
+          <input id="datLink" type="text" value="https://nahhhh.ps.fhgdps.com" readonly aria-readonly="true" aria-label="Database link">
+        </label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+          <button class="btn" id="copyBtn"><i class="fa-solid fa-copy"></i> Copy Database Link</button>
+          <a class="btn outline" href="https://nahhhh.ps.fhgdps.com/dashboard" target="_blank" rel="noopener"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        </div>
+      </section>
+
+      <!-- LINKS -->
+      <section class="card span-6" aria-labelledby="links-title">
+        <h2 id="links-title"><i class="fa-solid fa-link"></i> Upsilon GDPS Links</h2>
+        <div style="display:grid;grid-template-columns:1fr;gap:10px">
+          <a href="https://upsilongdps.netlify.app/download" class="btn" target="_blank" rel="noopener"><i class="fa-solid fa-download"></i> Download GDPS</a>
+          <a href="https://gdpshub.com/gdps/5397" class="btn" target="_blank" rel="noopener"><i class="fa-solid fa-star"></i> Rate on GDPS Hub</a>
+          <a href="https://upsilongdps.netlify.app/" class="btn" target="_blank" rel="noopener"><i class="fa-solid fa-screwdriver-wrench"></i> Tools</a>
+          <a href="https://nahhhh.ps.fhgdps.com/dashboard/songs/" class="btn" target="_blank" rel="noopener"><i class="fa-solid fa-music"></i> Upload Song</a>
+          <a href="https://github.com/Upsilony/UpsilonGDPS/" class="btn" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+          <a href="https://nahhhh.ps.fhgdps.com/browser/" class="btn" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Browser</a>
+        </div>
+      </section>
+
+      <!-- CHANGELOG -->
+      <section class="card span-8" aria-labelledby="log-title">
+        <h2 id="log-title"><i class="fa-solid fa-list"></i> Changelog</h2>
+        <div class="log"><span class="date">2025-11-22</span><span>GDPS Hub link fixed, website fix 🛠️</span></div>
+        <div class="log"><span class="date">2025-08-23</span><span>Website remade by Flessan ❤️‍🔥</span></div>
+        <div class="log"><span class="date">2025-08-17</span><span>GDPS all port texture fixed ❗</span></div>
+      </section>
+
+      <!-- SOCIAL -->
+      <section class="card span-4" aria-labelledby="soc-title">
+        <h2 id="soc-title"><i class="fa-solid fa-users"></i> Social & Support</h2>
+        <nav class="social" aria-label="Social links">
+          <a class="sbtn" href="https://discord.gg/cY8jBwKZkM/" target="_blank" rel="noopener"><i class="fab fa-discord"></i><span>Discord</span></a>
+          <a class="sbtn" href="https://youtube.com/@UpsilonGDPS" target="_blank" rel="noopener"><i class="fab fa-youtube"></i><span>YouTube</span></a>
+          <a class="sbtn" href="https://nahhhh.ps.fhgdps.com/dashboard" target="_blank" rel="noopener"><i class="fa-solid fa-server"></i><span>Dashboard</span></a>
+          <a class="sbtn" href="https://stats.uptimerobot.com/wpCeS1LMcH" target="_blank" rel="noopener"><i class="fa-solid fa-heart-pulse"></i><span>Server Status</span></a>
+          <a class="sbtn" href="https://github.com/Upsilony/UpsilonGDPS/" target="_blank" rel="noopener"><i class="fab fa-github"></i><span>GitHub</span></a>
+        </nav>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
+      <i class="fa-solid fa-circle-check" style="color:var(--success)"></i>
+      <span id="toastText">Link copied successfully! Paste it in your GDPS Switcher!</span>
+    </div>
+
+    <footer>
+      <div class="flinks">
+        <a href="https://discord.gg/cY8jBwKZkM/" aria-label="Discord"><i class="fab fa-discord"></i></a>
+        <a href="https://youtube.com/@UpsilonGDPS" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://github.com/Upsilony/UpsilonGDPS/" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://nahhhh.ps.fhgdps.com/dashboard" aria-label="Dashboard"><i class="fa-solid fa-server"></i></a>
+      </div>
+      <small>&copy; 2025 Upsilon GDPS by Upsilony. All rights reserved.</small>
+    </footer>
+  </div>
+
+  <script>
+    // Copy DB link with fallback
+    const copyBtn = document.getElementById('copyBtn');
+    const datInput = document.getElementById('datLink');
+    const toast = document.getElementById('toast');
+    function showToast(text){
+      document.getElementById('toastText').textContent = text || 'Copied!';
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>toast.classList.remove('show'), 2800);
+    }
+    copyBtn.addEventListener('click', async ()=>{
+      datInput.select(); datInput.setSelectionRange(0, datInput.value.length);
+      try{ await navigator.clipboard.writeText(datInput.value); showToast('Link copied successfully!'); }
+      catch(e){ document.execCommand('copy'); showToast('Link copied (fallback)!'); }
+    });
+
+    // Gentle reveal on scroll
+    const cards=[...document.querySelectorAll('.card')];
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.animate([{opacity:0, transform:'translateY(12px)'},{opacity:1, transform:'translateY(0)'}],{duration:420, easing:'cubic-bezier(.2,.8,.2,1)', fill:'forwards'}); io.unobserve(e.target); } });
+    },{threshold:.15});
+    cards.forEach(c=>io.observe(c));
+  </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"15ae9138f5294d1aa41d1191a9337476","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
