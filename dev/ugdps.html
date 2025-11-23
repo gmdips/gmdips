@@ -6,7 +6,7 @@
   <title>Upsilon GDPS | Main</title>
   <meta name="description" content="Upsilon GDPS • Experience GDPS server with extra features, tools, and everything." />
   <link rel="icon" href="/dashboard/icon.png" />
-  <meta name="theme-color" content="#ff1493" />
+  <meta name="theme-color" content="#ff69b4" />
   <meta property="og:title" content="Upsilon GDPS | Main" />
   <meta property="og:description" content="Experience GDPS server focused on your dream with more features. Join to help Upsilon GDPS and make more better!" />
   <meta property="og:image" content="https://nahhhh.ps.fhgdps.com/dashboard/icon.png" />
@@ -14,22 +14,17 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #ff1493;
-      --primary-light: #ff6bb3;
-      --primary-dark: #c7007c;
-      --secondary: #8a2be2;
-      --accent: #ff8dc7;
-      --bg: #0a0118;
-      --bg-card: rgba(25, 15, 40, 0.85);
-      --glass: rgba(30, 15, 45, 0.6);
-      --text: #f5f5f5;
-      --text-secondary: #bfbfbf;
-      --success: #22c55e;
-      --warning: #fbbf24;
-      --border: rgba(255, 20, 147, 0.2);
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.6);
+      --primary: #ff69b4;
+      --primary-light: #ff85c2;
+      --primary-dark: #ff4da6;
+      --accent: #ff9bd1;
+      --white: #ffffff;
+      --black: #000000;
+      --glass-white: rgba(255, 255, 255, 0.15);
+      --glass-pink: rgba(255, 105, 180, 0.15);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.8);
+      --border: rgba(255, 255, 255, 0.2);
     }
 
     * {
@@ -38,19 +33,16 @@
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: var(--text);
-      background: linear-gradient(135deg, #0a0118 0%, #1a0b2e 50%, #2d1b69 100%);
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text-primary);
+      background: linear-gradient(135deg, #1a0033 0%, #330011 50%, #1a0033 100%);
       min-height: 100vh;
       overflow-x: hidden;
+      position: relative;
     }
 
-    /* Animated background */
+    /* Animated background elements */
     .bg-animation {
       position: fixed;
       width: 100%;
@@ -66,7 +58,7 @@
       display: block;
       width: 20px;
       height: 20px;
-      background: rgba(255, 20, 147, 0.2);
+      background: rgba(255, 105, 180, 0.2);
       animation: move 25s linear infinite;
       bottom: -150px;
     }
@@ -183,29 +175,29 @@
       height: 150px;
       border-radius: 50%;
       border: 4px solid var(--primary);
-      box-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
       animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
       0% {
-        box-shadow: 0 0 0 0 rgba(255, 20, 147, 0.7);
+        box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7);
       }
       70% {
-        box-shadow: 0 0 0 20px rgba(255, 20, 147, 0);
+        box-shadow: 0 0 0 20px rgba(255, 105, 180, 0);
       }
       100% {
-        box-shadow: 0 0 0 0 rgba(255, 20, 147, 0);
+        box-shadow: 0 0 0 0 rgba(255, 105, 180, 0);
       }
     }
 
     h1 {
       font-size: 3rem;
       margin-bottom: 10px;
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      background: linear-gradient(45deg, var(--primary), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 15px rgba(255, 20, 147, 0.3);
+      text-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
     }
 
     .tagline {
@@ -218,18 +210,19 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 20px;
-      background: var(--glass);
+      padding: 12px 24px;
+      background: var(--glass-pink);
       border-radius: 50px;
       border: 1px solid var(--border);
       backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     .status-dot {
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: var(--success);
+      background-color: #22c55e;
       animation: blink 1.5s infinite;
     }
 
@@ -249,20 +242,21 @@
 
     .nav-btn {
       padding: 12px 24px;
-      background: var(--glass);
+      background: var(--glass-pink);
       border: 1px solid var(--border);
       border-radius: 50px;
-      color: var(--text);
+      color: var(--text-primary);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 8px;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     .nav-btn:hover {
-      background: rgba(255, 20, 147, 0.2);
+      background: rgba(255, 105, 180, 0.3);
       transform: translateY(-3px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
@@ -276,10 +270,10 @@
     }
 
     .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 25px;
-      box-shadow: var(--shadow);
+      background: var(--glass-pink);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--border);
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
@@ -294,12 +288,12 @@
       left: 0;
       width: 100%;
       height: 5px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      background: linear-gradient(90deg, var(--primary), var(--accent));
     }
 
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     }
 
     .card-title {
@@ -307,7 +301,7 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 20px;
-      color: var(--primary-light);
+      color: var(--accent);
       font-size: 1.5rem;
     }
 
@@ -323,20 +317,21 @@
 
     .input-field {
       flex: 1;
-      padding: 12px;
-      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
       border: 1px solid var(--border);
-      border-radius: 8px 0 0 8px;
-      color: var(--text);
+      border-radius: 15px 0 0 15px;
+      color: var(--text-primary);
       font-size: 1rem;
+      backdrop-filter: blur(5px);
     }
 
     .input-addon {
-      padding: 0 15px;
-      background: rgba(255, 20, 147, 0.2);
+      padding: 0 20px;
+      background: rgba(255, 105, 180, 0.3);
       border: 1px solid var(--border);
       border-left: none;
-      border-radius: 0 8px 8px 0;
+      border-radius: 0 15px 15px 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -345,44 +340,46 @@
     }
 
     .input-addon:hover {
-      background: rgba(255, 20, 147, 0.3);
+      background: rgba(255, 105, 180, 0.5);
     }
 
     .btn {
       display: inline-block;
-      padding: 12px 20px;
+      padding: 15px 25px;
       background: linear-gradient(45deg, var(--primary), var(--primary-light));
-      color: white;
+      color: var(--white);
       border: none;
-      border-radius: 8px;
+      border-radius: 15px;
       cursor: pointer;
       font-size: 1rem;
       font-weight: 600;
       text-align: center;
       text-decoration: none;
       transition: all 0.3s ease;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       width: 100%;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
     }
 
     .btn:hover {
       background: linear-gradient(45deg, var(--primary-dark), var(--primary));
       transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(255, 20, 147, 0.3);
+      box-shadow: 0 10px 20px rgba(255, 105, 180, 0.4);
     }
 
     .btn i {
-      margin-right: 8px;
+      margin-right: 10px;
     }
 
     .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--primary);
-      color: var(--primary);
+      background: var(--glass-pink);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      backdrop-filter: blur(10px);
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 20, 147, 0.1);
+      background: rgba(255, 105, 180, 0.3);
     }
 
     /* Links grid */
@@ -397,13 +394,14 @@
       padding: 15px;
       margin-bottom: 15px;
       background: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
+      border-radius: 15px;
       border-left: 4px solid var(--primary);
+      backdrop-filter: blur(5px);
     }
 
     .changelog-date {
       font-weight: bold;
-      color: var(--primary-light);
+      color: var(--accent);
       margin-bottom: 5px;
     }
 
@@ -418,23 +416,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 15px;
+      padding: 20px;
       background: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      color: var(--text);
+      border-radius: 15px;
+      color: var(--text-primary);
       text-decoration: none;
       transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid var(--border);
     }
 
     .social-link:hover {
-      background: rgba(255, 20, 147, 0.1);
-      transform: translateY(-3px);
+      background: rgba(255, 105, 180, 0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
 
     .social-link i {
       font-size: 2rem;
       margin-bottom: 10px;
-      color: var(--primary-light);
+      color: var(--accent);
     }
 
     /* Footer */
@@ -459,7 +460,7 @@
     }
 
     .footer-links a:hover {
-      color: var(--primary);
+      color: var(--accent);
       transform: translateY(-3px);
     }
 
@@ -469,9 +470,9 @@
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--glass);
+      background: var(--glass-pink);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 15px;
       padding: 15px 25px;
       display: flex;
       align-items: center;
@@ -480,6 +481,7 @@
       opacity: 0;
       transition: all 0.3s ease;
       z-index: 1000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     .toast.show {
@@ -488,7 +490,7 @@
     }
 
     .toast i {
-      color: var(--success);
+      color: #22c55e;
     }
 
     /* Responsive design */
@@ -533,7 +535,7 @@
         <span>Server Status: Online</span>
       </div>
     </header>
-
+    
     <nav>
       <a href="#database" class="nav-btn">
         <i class="fa-solid fa-database"></i>
@@ -610,6 +612,10 @@
           <span>Changelog</span>
         </h2>
         <div class="changelog-item">
+          <div class="changelog-date">2025-11-23</div>
+          <div>Redesign Landing Pages️</div>
+        </div>
+        <div class="changelog-item">
           <div class="changelog-date">2025-11-22</div>
           <div>GDPS Hub link fixed, website fix 🛠️</div>
         </div>
@@ -644,10 +650,6 @@
           <a href="https://stats.uptimerobot.com/wpCeS1LMcH" target="_blank" rel="noopener" class="social-link">
             <i class="fa-solid fa-heart-pulse"></i>
             <span>Server Status</span>
-          </a>
-          <a href="https://github.com/Upsilony/UpsilonGDPS/" target="_blank" rel="noopener" class="social-link">
-            <i class="fab fa-github"></i>
-            <span>GitHub</span>
           </a>
         </div>
       </section>
