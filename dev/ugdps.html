@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Upsilon GDPS | Main</title>
+  <meta name="description" content="Upsilon GDPS • Experience GDPS server with extra features, tools, and everything." />
+  <link rel="icon" href="/dashboard/icon.png" />
+  <meta name="theme-color" content="#ff69b4" />
+  <meta property="og:title" content="Upsilon GDPS | Main" />
+  <meta property="og:description" content="Experience GDPS server focused on your dream with more features. Join to help Upsilon GDPS and make more better!" />
+  <meta property="og:image" content="https://nahhhh.ps.fhgdps.com/dashboard/icon.png" />
+  <meta property="og:type" content="website" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ff69b4;
+      --primary-light: #ff85c2;
+      --primary-dark: #ff4da6;
+      --accent: #ff9bd1;
+      --white: #ffffff;
+      --black: #000000;
+      --glass-white: rgba(255, 255, 255, 0.15);
+      --glass-pink: rgba(255, 105, 180, 0.15);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.8);
+      --border: rgba(255, 255, 255, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text-primary);
+      background: linear-gradient(135deg, #1a0033 0%, #330011 50%, #1a0033 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated background elements */
+    .bg-animation {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-animation span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 105, 180, 0.2);
+      animation: move 25s linear infinite;
+      bottom: -150px;
+    }
+
+    .bg-animation span:nth-child(1) {
+      left: 25%;
+      width: 80px;
+      height: 80px;
+      animation-delay: 0s;
+    }
+
+    .bg-animation span:nth-child(2) {
+      left: 10%;
+      width: 20px;
+      height: 20px;
+      animation-delay: 2s;
+      animation-duration: 12s;
+    }
+
+    .bg-animation span:nth-child(3) {
+      left: 70%;
+      width: 20px;
+      height: 20px;
+      animation-delay: 4s;
+    }
+
+    .bg-animation span:nth-child(4) {
+      left: 40%;
+      width: 60px;
+      height: 60px;
+      animation-delay: 0s;
+      animation-duration: 18s;
+    }
+
+    .bg-animation span:nth-child(5) {
+      left: 65%;
+      width: 20px;
+      height: 20px;
+      animation-delay: 0s;
+    }
+
+    .bg-animation span:nth-child(6) {
+      left: 75%;
+      width: 110px;
+      height: 110px;
+      animation-delay: 3s;
+    }
+
+    .bg-animation span:nth-child(7) {
+      left: 35%;
+      width: 150px;
+      height: 150px;
+      animation-delay: 7s;
+    }
+
+    .bg-animation span:nth-child(8) {
+      left: 50%;
+      width: 25px;
+      height: 25px;
+      animation-delay: 15s;
+      animation-duration: 45s;
+    }
+
+    .bg-animation span:nth-child(9) {
+      left: 20%;
+      width: 15px;
+      height: 15px;
+      animation-delay: 2s;
+      animation-duration: 35s;
+    }
+
+    .bg-animation span:nth-child(10) {
+      left: 85%;
+      width: 150px;
+      height: 150px;
+      animation-delay: 0s;
+      animation-duration: 11s;
+    }
+
+    @keyframes move {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+      }
+      100% {
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 0;
+      position: relative;
+    }
+
+    .logo-container {
+      display: inline-block;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 20px rgba(255, 105, 180, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 105, 180, 0);
+      }
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      background: var(--glass-pink);
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #22c55e;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      padding: 12px 24px;
+      background: var(--glass-pink);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 105, 180, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Main content */
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .card {
+      background: var(--glass-pink);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .card-title i {
+      font-size: 1.8rem;
+    }
+
+    /* Input and buttons */
+    .input-group {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .input-field {
+      flex: 1;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      border-radius: 15px 0 0 15px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .input-addon {
+      padding: 0 20px;
+      background: rgba(255, 105, 180, 0.3);
+      border: 1px solid var(--border);
+      border-left: none;
+      border-radius: 0 15px 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .input-addon:hover {
+      background: rgba(255, 105, 180, 0.5);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 25px;
+      background: linear-gradient(45deg, var(--primary), var(--primary-light));
+      color: var(--white);
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    }
+
+    .btn:hover {
+      background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 105, 180, 0.4);
+    }
+
+    .btn i {
+      margin-right: 10px;
+    }
+
+    .btn-secondary {
+      background: var(--glass-pink);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 105, 180, 0.3);
+    }
+
+    /* Links grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    /* Changelog */
+    .changelog-item {
+      padding: 15px;
+      margin-bottom: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      border-left: 4px solid var(--primary);
+      backdrop-filter: blur(5px);
+    }
+
+    .changelog-date {
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+
+    /* Social links */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    .social-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid var(--border);
+    }
+
+    .social-link:hover {
+      background: rgba(255, 105, 180, 0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .social-link i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--glass-pink);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 15px 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast i {
+      color: #22c55e;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <img src="https://nahhhh.ps.fhgdps.com/dashboard/icon.png" alt="Upsilon GDPS Logo" class="logo">
+      </div>
+      <h1>Upsilon GDPS</h1>
+      <p class="tagline">Experience Geometry Dash Private Server focused on your dream</p>
+      <div class="status">
+        <span class="status-dot"></span>
+        <span>Server Status: Online</span>
+      </div>
+    </header>
+    
+    <nav>
+      <a href="#database" class="nav-btn">
+        <i class="fa-solid fa-database"></i>
+        <span>Database</span>
+      </a>
+      <a href="#links" class="nav-btn">
+        <i class="fa-solid fa-link"></i>
+        <span>Links</span>
+      </a>
+      <a href="#changelog" class="nav-btn">
+        <i class="fa-solid fa-list"></i>
+        <span>Changelog</span>
+      </a>
+      <a href="#social" class="nav-btn">
+        <i class="fa-solid fa-users"></i>
+        <span>Social</span>
+      </a>
+    </nav>
+
+    <main>
+      <section id="database" class="card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-database"></i>
+          <span>Upsilon GDPS Database</span>
+        </h2>
+        <div class="input-group">
+          <input type="text" id="datLink" class="input-field" value="https://nahhhh.ps.fhgdps.com" readonly>
+          <div class="input-addon" id="copyBtn">
+            <i class="fa-solid fa-copy"></i>
+          </div>
+        </div>
+        <a href="https://nahhhh.ps.fhgdps.com/dashboard" target="_blank" rel="noopener" class="btn">
+          <i class="fa-solid fa-chart-line"></i>
+          Dashboard
+        </a>
+      </section>
+
+      <section id="links" class="card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-link"></i>
+          <span>Upsilon GDPS Links</span>
+        </h2>
+        <div class="links-grid">
+          <a href="https://upsilongdps.netlify.app/download" target="_blank" rel="noopener" class="btn">
+            <i class="fa-solid fa-download"></i>
+            Download GDPS
+          </a>
+          <a href="https://gdpshub.com/gdps/5397" target="_blank" rel="noopener" class="btn">
+            <i class="fa-solid fa-star"></i>
+            Rate on GDPS Hub
+          </a>
+          <a href="https://upsilongdps.netlify.app/" target="_blank" rel="noopener" class="btn">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            Tools
+          </a>
+          <a href="https://nahhhh.ps.fhgdps.com/dashboard/songs/" target="_blank" rel="noopener" class="btn">
+            <i class="fa-solid fa-music"></i>
+            Upload Song
+          </a>
+          <a href="https://github.com/Upsilony/UpsilonGDPS/" target="_blank" rel="noopener" class="btn">
+            <i class="fa-brands fa-github"></i>
+            GitHub Repo
+          </a>
+          <a href="https://nahhhh.ps.fhgdps.com/browser/" target="_blank" rel="noopener" class="btn">
+            <i class="fa-solid fa-globe"></i>
+            Browser
+          </a>
+        </div>
+      </section>
+
+      <section id="changelog" class="card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-list"></i>
+          <span>Changelog</span>
+        </h2>
+        <div class="changelog-item">
+          <div class="changelog-date">2025-11-23</div>
+          <div>Redesign Landing Pages️</div>
+        </div>
+        <div class="changelog-item">
+          <div class="changelog-date">2025-11-22</div>
+          <div>GDPS Hub link fixed, website fix 🛠️</div>
+        </div>
+        <div class="changelog-item">
+          <div class="changelog-date">2025-08-23</div>
+          <div>Website remade by Flessan ❤️‍🔥</div>
+        </div>
+        <div class="changelog-item">
+          <div class="changelog-date">2025-08-17</div>
+          <div>GDPS all port texture fixed ❗</div>
+        </div>
+      </section>
+
+      <section id="social" class="card">
+        <h2 class="card-title">
+          <i class="fa-solid fa-users"></i>
+          <span>Social & Support</span>
+        </h2>
+        <div class="social-grid">
+          <a href="https://discord.gg/cY8jBwKZkM/" target="_blank" rel="noopener" class="social-link">
+            <i class="fab fa-discord"></i>
+            <span>Discord</span>
+          </a>
+          <a href="https://youtube.com/@UpsilonGDPS" target="_blank" rel="noopener" class="social-link">
+            <i class="fab fa-youtube"></i>
+            <span>YouTube</span>
+          </a>
+          <a href="https://nahhhh.ps.fhgdps.com/dashboard" target="_blank" rel="noopener" class="social-link">
+            <i class="fa-solid fa-server"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="https://stats.uptimerobot.com/wpCeS1LMcH" target="_blank" rel="noopener" class="social-link">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <span>Server Status</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-links">
+        <a href="https://discord.gg/cY8jBwKZkM/" aria-label="Discord">
+          <i class="fab fa-discord"></i>
+        </a>
+        <a href="https://youtube.com/@UpsilonGDPS" aria-label="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://github.com/Upsilony/UpsilonGDPS/" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://nahhhh.ps.fhgdps.com/dashboard" aria-label="Dashboard">
+          <i class="fa-solid fa-server"></i>
+        </a>
+      </div>
+      <p>&copy; 2025 Upsilon GDPS by Upsilony. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastText">Link copied successfully!</span>
+  </div>
+
+  <script>
+    // Copy DB link functionality
+    const copyBtn = document.getElementById('copyBtn');
+    const datInput = document.getElementById('datLink');
+    const toast = document.getElementById('toast');
+    
+    function showToast(text) {
+      document.getElementById('toastText').textContent = text || 'Copied!';
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    copyBtn.addEventListener('click', async () => {
+      datInput.select();
+      datInput.setSelectionRange(0, datInput.value.length);
+      
+      try {
+        await navigator.clipboard.writeText(datInput.value);
+        showToast('Link copied successfully! Paste it in your GDPS Switcher!');
+      } catch (err) {
+        document.execCommand('copy');
+        showToast('Link copied (fallback method)!');
+      }
+    });
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Add animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Initially hide all cards
+    document.querySelectorAll('.card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
+    });
+  </script>
+</body>
+</html>
