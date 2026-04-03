@@ -1,6 +1,6 @@
 <h1 align="center">
   <img src="https://fless.ps.fhgdps.com/dashboard/icon.png" width="40"/>
-  GDIPS
+  GDIPS Reborn 
 </h1>
 
 <p align="center">
