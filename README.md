@@ -8,10 +8,11 @@
 </p>
 
 <div align="center">
-  
+
+  [![Netlify Status](https://api.netlify.com/api/v1/badges/2a4d2279-e9e0-45b5-b11d-bc5c5df1efde/deploy-status)](https://app.netlify.com/projects/gdips/deploys)
   [![GDPS Version](https://img.shields.io/badge/version-2.1.3-orange)](https://fless.rf.gd/download.php)
-  [![Server Status](https://img.shields.io/badge/status-🟢_Alive-green)](https://fless.ps.fhgdps.com)
-  [![Community Age](https://img.shields.io/badge/active_since-2024-blue)]()
+  [![Server Status](https://img.shields.io/badge/status-🟢_Alive-green)](https://gdi.ps.fhgdps.com)
+  [![Community Age](https://img.shields.io/badge/since-2024-blue)]()
 
 </div>
 
