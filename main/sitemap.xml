@@ -1,44 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://gdips.netlify.app</loc>
-    <lastmod>2025-05-24</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://gdips.pages.dev/</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
   <url>
-    <loc>https://gdips.netlify.app/download</loc>
-    <lastmod>2025-05-24</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://gdips.pages.dev/pages/</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
-    <loc>https://gdips.netlify.app/demonlist</loc>
-    <lastmod>2025-05-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://gdips.netlify.app/tools</loc>
-    <lastmod>2025-05-24</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://gdips.pages.dev/pages/en/main/</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
-    <loc>https://gdips.netlify.app/feedback/</loc>
-    <lastmod>2025-05-24</lastmod>
+    <loc>https://gdips.pages.dev/pages/id/utama/</loc>
+    <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
-
   <url>
-    <loc>https://gdips.netlify.app/rate</loc>
-    <lastmod>2025-05-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://gdips.pages.dev/</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>
