@@ -1,0 +1,37 @@
+name: 🎉 Welcome
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            👋 **Halo! Terima kasih sudah buka issue di website GDIPS!**
+
+            Maintainer akan review secepatnya (biasanya 1-7 hari).
+
+            Sementara itu:
+            - 📖 Cek [website live](https://gdips.pages.dev) untuk konteks
+            - 🔍 Cek [issue serupa](https://github.com/gmdips/site/issues?q=is%3Aissue)
+            - 💬 Atau tanya di [Discord](https://discord.gg/YyeZ2Sxjgf)
+
+            💚 **Terima kasih sudah peduli!**
+          pr-message: |
+            🎉 **PR pertamamu di website GDIPS!**
+
+            Kami akan review secepatnya. Pastikan:
+            - ✅ [Checklist PR](https://github.com/gmdips/site/blob/main/.github/PULL_REQUEST_TEMPLATE.md) sudah terisi
+            - ✅ Sudah di-preview lokal (buka file HTML di browser)
+            - ✅ Responsive di mobile
+
+            💬 Ada pertanyaan? [Discord](https://discord.gg/YyeZ2Sxjgf)
+
+            **Terima kasih sudah berkontribusi!** 🚀
