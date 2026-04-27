@@ -1,0 +1,26 @@
+---
+name: 🎨 Design / Visual
+about: Usulkan perbaikan desain atau visual website
+title: '[DESIGN] '
+labels: design, website, needs-discussion
+assignees: ''
+---
+
+## 🎨 Usulan Desain
+<!-- Jelaskan perubahan visual yang diinginkan -->
+
+## 📍 Lokasi
+Halaman/elemen: 
+
+## 📸 Referensi Visual
+<!-- Screenshot mockup, link referensi, dll -->
+
+## 🎯 Tujuan
+<!-- Kenapa perubahan ini dibutuhkan? -->
+- [ ] Perbaikan responsif (mobile/tablet)
+- [ ] Perbaikan aksesibilitas (kontras, font size)
+- [ ] Peningkatan estetika
+- [ ] Konsistensi dengan brand
+- [ ] Lainnya: 
+
+## 📎 Catatan
